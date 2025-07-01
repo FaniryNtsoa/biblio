@@ -70,14 +70,4 @@ public class AdherentServiceImpl implements AdherentService {
         Optional<Adherent> adherent = adherentRepository.findById(id);
         return adherent.map(a -> a.getMotDePasse().equals(motDePasse)).orElse(false);
     }
-    
-    @Override
-    public Adherent findByEmail(String email) {
-        return adherentRepository.findByEmail(email).orElse(null);
-    }
-    
-    @Override
-    public boolean existsByEmail(String email) {
-        return adherentRepository.findByEmail(email).isPresent();
-    }
 }

@@ -17,8 +17,4 @@ public interface AdherentService {
     Optional<Adherent> findByNomAndPrenom(String nom, String prenom);
     List<Adherent> findByDtnBefore(LocalDate date);
     boolean checkMotDePasse(Long id, String motDePasse);
-    
-    // Nouvelles méthodes pour l'authentification
-    Adherent findByEmail(String email);
-    boolean existsByEmail(String email);
 }

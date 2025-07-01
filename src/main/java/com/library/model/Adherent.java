@@ -13,31 +13,34 @@ public class Adherent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @ManyToOne
+    @JoinColumn(name = "type_adherent_id", nullable = false)
+    private TypeAdherent typeAdherent;
+    
     @Column(nullable = false, length = 50)
     private String nom;
     
     @Column(nullable = false, length = 50)
     private String prenom;
     
-    @Column(name = "date_naissance")
-    private LocalDate dtn;
-    
-    @Column(name = "adresse", length = 100)
+    @Column(length = 50)
     private String adresse;
     
-    @Column(name = "tel", length = 20)
-    private String tel;
-    
-    @Column(name = "email", unique = true, length = 100)
-    private String email;
-    
-    @Column(name = "mot_de_passe", length = 100)
+    @Column(name = "mot_de_passe", nullable = false, length = 50)
     private String motDePasse;
     
-    @ManyToOne
-    @JoinColumn(name = "type_adherent_id", nullable = false)
-    private TypeAdherent typeAdherent;
+    @Column(nullable = false)
+    private LocalDate dtn;
     
+    @OneToMany(mappedBy = "adherent")
+    private Set<Inscription> inscriptions = new HashSet<>();
+    
+    @OneToMany(mappedBy = "adherent")
+    private Set<Reservation> reservations = new HashSet<>();
+    
+    @OneToMany(mappedBy = "adherent")
+    private Set<Pret> prets = new HashSet<>();
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -45,6 +48,14 @@ public class Adherent {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public TypeAdherent getTypeAdherent() {
+        return typeAdherent;
+    }
+
+    public void setTypeAdherent(TypeAdherent typeAdherent) {
+        this.typeAdherent = typeAdherent;
     }
 
     public String getNom() {
@@ -63,36 +74,12 @@ public class Adherent {
         this.prenom = prenom;
     }
 
-    public LocalDate getDtn() {
-        return dtn;
-    }
-
-    public void setDtn(LocalDate dtn) {
-        this.dtn = dtn;
-    }
-
     public String getAdresse() {
         return adresse;
     }
 
     public void setAdresse(String adresse) {
         this.adresse = adresse;
-    }
-
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getMotDePasse() {
@@ -103,14 +90,27 @@ public class Adherent {
         this.motDePasse = motDePasse;
     }
 
-    public TypeAdherent getTypeAdherent() {
-        return typeAdherent;
+    public LocalDate getDtn() {
+        return dtn;
     }
 
-    public void setTypeAdherent(TypeAdherent typeAdherent) {
-        this.typeAdherent = typeAdherent;
+    public void setDtn(LocalDate dtn) {
+        this.dtn = dtn;
     }
-}
+
+    public Set<Inscription> getInscriptions() {
+        return inscriptions;
+    }
+
+    public void setInscriptions(Set<Inscription> inscriptions) {
+        this.inscriptions = inscriptions;
+    }
+
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(Set<Reservation> reservations) {
         this.reservations = reservations;
     }
 

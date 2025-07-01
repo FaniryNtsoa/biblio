@@ -15,5 +15,4 @@ public interface AdherentRepository extends JpaRepository<Adherent, Long> {
     List<Adherent> findByTypeAdherent(TypeAdherent typeAdherent);
     Optional<Adherent> findByNomAndPrenom(String nom, String prenom);
     List<Adherent> findByDtnBefore(LocalDate date);
-    Optional<Adherent> findByEmail(String email);
 }
