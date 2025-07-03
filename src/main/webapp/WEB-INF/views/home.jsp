@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -28,6 +29,50 @@
                     </div>
                 </div>
             </header>
+            
+            <c:if test="${needMembership}">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="alert-content">
+                        <strong>Accès limité !</strong> Cette fonctionnalité est réservée aux membres.
+                        <a href="<c:url value='/inscription'/>" class="alert-link">Devenir membre</a>
+                    </div>
+                </div>
+            </c:if>
+            
+            <c:if test="${not empty success}">
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> ${success}
+                </div>
+            </c:if>
+            
+            <div class="membership-status-banner ${isActiveMember ? 'active' : 'inactive'}">
+                <div class="status-icon">
+                    <i class="fas ${isActiveMember ? 'fa-user-check' : 'fa-user-clock'}"></i>
+                </div>
+                <div class="status-info">
+                    <c:choose>
+                        <c:when test="${isActiveMember}">
+                            <h3>Membre actif</h3>
+                            <p>Votre adhésion est valide jusqu'au ${formattedDates.dateExpiration}</p>
+                        </c:when>
+                        <c:otherwise>
+                            <h3>Non membre</h3>
+                            <p>Vous n'avez pas d'adhésion active</p>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="status-action">
+                    <c:choose>
+                        <c:when test="${isActiveMember}">
+                            <a href="<c:url value='/inscription/status'/>" class="btn btn-outline">Voir les détails</a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="<c:url value='/inscription'/>" class="btn btn-primary">Devenir membre</a>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
             
             <div class="dashboard">
                 <div class="dashboard-cards">
@@ -61,13 +106,19 @@
                             <i class="fas fa-book"></i>
                             <span>Consulter le catalogue</span>
                         </a>
-                        <a href="#" class="action-button">
+                        <a href="<c:url value='/prets'/>" class="action-button ${!isActiveMember ? 'disabled' : ''}">
                             <i class="fas fa-bookmark"></i>
                             <span>Voir mes emprunts</span>
+                            <c:if test="${!isActiveMember}">
+                                <span class="member-only-badge">Membres uniquement</span>
+                            </c:if>
                         </a>
-                        <a href="#" class="action-button">
+                        <a href="<c:url value='/reservations'/>" class="action-button ${!isActiveMember ? 'disabled' : ''}">
                             <i class="fas fa-clock"></i>
                             <span>Gérer mes réservations</span>
+                            <c:if test="${!isActiveMember}">
+                                <span class="member-only-badge">Membres uniquement</span>
+                            </c:if>
                         </a>
                     </div>
                 </div>
@@ -99,6 +150,12 @@
                     button.classList.add('fade-in');
                 }, 300 + (100 * index));
             });
+            
+            // Animation de la bannière d'adhésion
+            const membershipBanner = document.querySelector('.membership-status-banner');
+            setTimeout(() => {
+                membershipBanner.classList.add('slide-in');
+            }, 200);
         });
     </script>
 </body>
