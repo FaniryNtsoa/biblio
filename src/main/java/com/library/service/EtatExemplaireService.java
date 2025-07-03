@@ -9,5 +9,4 @@ public interface EtatExemplaireService {
     Optional<EtatExemplaire> getEtatExemplaireById(Long id);
     EtatExemplaire saveEtatExemplaire(EtatExemplaire etatExemplaire);
     void deleteEtatExemplaire(Long id);
-    Optional<EtatExemplaire> findByNom(String nom);
 }

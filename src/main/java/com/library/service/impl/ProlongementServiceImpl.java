@@ -50,15 +50,6 @@ public class ProlongementServiceImpl implements ProlongementService {
         prolongementRepository.deleteById(id);
     }
 
-    @Override
-    public List<Prolongement> findByPret(Pret pret) {
-        return prolongementRepository.findByPret(pret);
-    }
-
-    @Override
-    public long countByPret(Pret pret) {
-        return prolongementRepository.countByPret(pret);
-    }
 
     @Override
     @Transactional

@@ -38,8 +38,4 @@ public class StatusPretServiceImpl implements StatusPretService {
         statusPretRepository.deleteById(id);
     }
 
-    @Override
-    public Optional<StatusPret> findByNom(String nom) {
-        return statusPretRepository.findByNom(nom);
-    }
 }

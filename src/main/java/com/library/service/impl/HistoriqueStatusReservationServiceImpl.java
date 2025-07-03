@@ -51,21 +51,6 @@ public class HistoriqueStatusReservationServiceImpl implements HistoriqueStatusR
     }
 
     @Override
-    public List<HistoriqueStatusReservation> findByReservation(Reservation reservation) {
-        return historiqueStatusReservationRepository.findByReservation(reservation);
-    }
-
-    @Override
-    public List<HistoriqueStatusReservation> findByStatusReservation(StatusReservation statusReservation) {
-        return historiqueStatusReservationRepository.findByStatusReservation(statusReservation);
-    }
-
-    @Override
-    public List<HistoriqueStatusReservation> findByDateReservationBetween(LocalDate dateDebut, LocalDate dateFin) {
-        return historiqueStatusReservationRepository.findByDateReservationBetween(dateDebut, dateFin);
-    }
-
-    @Override
     @Transactional
     public HistoriqueStatusReservation createHistoriqueStatusReservation(Long reservationId, Long statusReservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)

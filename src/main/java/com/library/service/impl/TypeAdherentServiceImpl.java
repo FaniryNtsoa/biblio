@@ -38,8 +38,4 @@ public class TypeAdherentServiceImpl implements TypeAdherentService {
         typeAdherentRepository.deleteById(id);
     }
 
-    @Override
-    public Optional<TypeAdherent> findByNom(String nom) {
-        return typeAdherentRepository.findByNom(nom);
-    }
 }

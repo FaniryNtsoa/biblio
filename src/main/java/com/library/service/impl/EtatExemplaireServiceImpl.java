@@ -37,9 +37,4 @@ public class EtatExemplaireServiceImpl implements EtatExemplaireService {
     public void deleteEtatExemplaire(Long id) {
         etatExemplaireRepository.deleteById(id);
     }
-
-    @Override
-    public Optional<EtatExemplaire> findByNom(String nom) {
-        return etatExemplaireRepository.findByNom(nom);
-    }
 }

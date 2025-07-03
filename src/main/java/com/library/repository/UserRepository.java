@@ -1,12 +1,10 @@
 package com.library.repository;
 
-import com.library.model.User;
-import com.library.model.TypeUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
+import com.library.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    List<User> findByTypeUser(TypeUser typeUser);
+    // Interface vide - utilise uniquement les méthodes héritées de JpaRepository
 }

@@ -1,11 +1,11 @@
 package com.library.service.impl;
 
 import com.library.model.User;
-import com.library.model.TypeUser;
 import com.library.repository.UserRepository;
 import com.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -39,14 +39,14 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    
     @Override
-    public List<User> findByTypeUser(TypeUser typeUser) {
-        return userRepository.findByTypeUser(typeUser);
+    public boolean isAdmin(User user) {
+        return user.getTypeUser().getNom().equalsIgnoreCase("admin");
     }
-
     @Override
-    public boolean authenticate(Long id, String motDePasse) {
-        Optional<User> user = userRepository.findById(id);
-        return user.map(u -> u.getMotDePasse().equals(motDePasse)).orElse(false);
+    public boolean isBibliothecaire(User user) {
+        return user.getTypeUser().getNom().equalsIgnoreCase("bibliothecaire");
     }
 }
+

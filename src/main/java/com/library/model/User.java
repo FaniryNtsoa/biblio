@@ -1,9 +1,16 @@
 package com.library.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users") // "user" est un mot réservé en PostgreSQL
 public class User {
     
     @Id
@@ -13,6 +20,7 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "type_user_id", nullable = false)
     private TypeUser typeUser;
+    
     
     @Column(name = "mot_de_passe", nullable = false, length = 50)
     private String motDePasse;
@@ -33,7 +41,7 @@ public class User {
     public void setTypeUser(TypeUser typeUser) {
         this.typeUser = typeUser;
     }
-
+    
     public String getMotDePasse() {
         return motDePasse;
     }
