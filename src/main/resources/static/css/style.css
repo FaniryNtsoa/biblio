@@ -1031,6 +1031,472 @@ label {
     z-index: 1;
 }
 
+/* Bannière d'adhésion */
+.membership-status-banner {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+
+.membership-status-banner.slide-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.membership-status-banner.active {
+    border-left: 4px solid #4caf50;
+}
+
+.membership-status-banner.inactive {
+    border-left: 4px solid #ff9800;
+}
+
+.status-icon {
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.membership-status-banner.active .status-icon {
+    color: #4caf50;
+}
+
+.membership-status-banner.inactive .status-icon {
+    color: #ff9800;
+}
+
+.status-info {
+    flex: 1;
+}
+
+.status-info h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.status-info p {
+    font-size: 14px;
+    color: #666;
+}
+
+.status-action {
+    margin-left: 20px;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid #3949ab;
+    color: #3949ab;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.btn-outline:hover {
+    background-color: #f5f8ff;
+}
+
+/* Alertes améliorées */
+.alert-warning {
+    background-color: #fff8e1;
+    color: #ff8f00;
+    border-left: 4px solid #ff8f00;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+.alert-link {
+    color: inherit;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.alert-link:hover {
+    text-decoration: none;
+}
+
+/* Boutons d'action désactivés */
+.action-button.disabled {
+    opacity: 0.7;
+    position: relative;
+    cursor: not-allowed;
+}
+
+.member-only-badge {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff9800;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+/* Page d'inscription */
+.membership-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.membership-info {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.membership-icon {
+    font-size: 40px;
+    color: #4caf50;
+    margin-right: 20px;
+    background-color: #e8f5e9;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.membership-icon.inactive {
+    color: #ff9800;
+    background-color: #fff8e1;
+}
+
+.membership-details h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.membership-details p {
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.membership-details ul {
+    list-style: none;
+    margin-left: 10px;
+}
+
+.membership-details ul li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 8px;
+}
+
+.membership-details ul li:before {
+    content: "\f00c";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    color: #4caf50;
+}
+
+.membership-form {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.membership-form h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.subscription-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.subscription-option {
+    position: relative;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.3s ease;
+}
+
+.subscription-option.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.subscription-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.subscription-option label {
+    display: block;
+    background-color: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.subscription-option input[type="radio"]:checked + label {
+    border-color: #3949ab;
+    background-color: #f5f8ff;
+    box-shadow: 0 5px 15px rgba(57, 73, 171, 0.1);
+}
+
+.option-title {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.option-price {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    color: #3949ab;
+    margin-bottom: 5px;
+}
+
+.option-popular {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #4caf50;
+    color: white;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.option-saving {
+    display: block;
+    font-size: 12px;
+    color: #4caf50;
+    font-weight: 500;
+}
+
+.form-actions {
+    text-align: center;
+}
+
+/* Page de statut d'adhésion */
+.membership-status {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.membership-status.active {
+    background-color: #e8f5e9;
+}
+
+.membership-status.inactive {
+    background-color: #fff8e1;
+}
+
+.membership-status .status-icon {
+    font-size: 50px;
+    margin-right: 25px;
+}
+
+.membership-status.active .status-icon {
+    color: #4caf50;
+}
+
+.membership-status.inactive .status-icon {
+    color: #ff9800;
+}
+
+.status-details h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.status-info {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.status-benefits, .status-restricted {
+    margin-top: 20px;
+}
+
+.status-benefits h3, .status-restricted h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.status-benefits ul, .status-restricted ul {
+    list-style: none;
+}
+
+.status-benefits ul li, .status-restricted ul li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.status-benefits ul li i, .status-restricted ul li i {
+    width: 20px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.status-benefits ul li i {
+    color: #4caf50;
+}
+
+.status-restricted ul li i.fa-check {
+    color: #4caf50;
+}
+
+.status-restricted ul li i.fa-times {
+    color: #f44336;
+}
+
+.membership-info-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.info-card-header {
+    background-color: #3949ab;
+    color: white;
+    padding: 15px 20px;
+}
+
+.info-card-header h3 {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.info-card-body {
+    padding: 20px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.status-active {
+    color: #4caf50;
+}
+
+.membership-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* Mise à jour des styles pour le formulaire d'inscription */
+.membership-period {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.input-date {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.input-date i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.input-date input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+.form-help {
+    font-size: 13px;
+    color: #666;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.duration-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.duration-btn {
+    flex: 1;
+    min-width: 80px;
+    text-align: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.duration-btn:hover, .duration-btn.active {
+    background-color: #3949ab;
+    color: white;
+    border-color: #3949ab;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
     .livre-detail-header {
@@ -1139,5 +1605,54 @@ label {
     
     .results-count {
         margin-top: 5px;
+    }
+    
+    .membership-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .membership-icon {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+    
+    .subscription-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .membership-status {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .membership-status .status-icon {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+    
+    .membership-status-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .status-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .status-action {
+        margin-left: 0;
+        margin-top: 15px;
+    }
+    
+    .duration-presets {
+        flex-direction: column;
+    }
+    
+    .duration-btn {
+        width: 100%;
     }
 }
