@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ExemplaireServiceImpl implements ExemplaireService {
@@ -44,17 +46,23 @@ public class ExemplaireServiceImpl implements ExemplaireService {
 
     @Override
     public List<Exemplaire> findByLivre(Livre livre) {
-        return exemplaireRepository.findByLivre(livre);
+        return exemplaireRepository.findAll().stream()
+                .filter(exemplaire -> exemplaire.getLivre().equals(livre))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Exemplaire> findByEtatExemplaire(EtatExemplaire etatExemplaire) {
-        return exemplaireRepository.findByEtatExemplaire(etatExemplaire);
+        return exemplaireRepository.findAll().stream()
+                .filter(exemplaire -> exemplaire.getEtatExemplaire().equals(etatExemplaire))
+                .collect(Collectors.toList());
     }
 
     @Override
     public long countByLivre(Livre livre) {
-        return exemplaireRepository.countByLivre(livre);
+        return exemplaireRepository.findAll().stream()
+                .filter(exemplaire -> exemplaire.getLivre().equals(livre))
+                .count();
     }
 
     @Override
@@ -80,5 +88,13 @@ public class ExemplaireServiceImpl implements ExemplaireService {
         }
         
         return exemplaires;
+    }
+
+    @Override
+    public List<Exemplaire> getRecentExemplaires(int limit) {
+        return exemplaireRepository.findAll().stream()
+                .sorted(Comparator.comparing(Exemplaire::getId).reversed())
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 }

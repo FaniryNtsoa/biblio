@@ -1,14 +1,10 @@
 package com.library.service.impl;
 
 import com.library.model.Reservation;
-import com.library.model.Adherent;
-import com.library.model.Livre;
 import com.library.model.StatusReservation;
 import com.library.model.HistoriqueStatusReservation;
 import com.library.repository.ReservationRepository;
 import com.library.repository.HistoriqueStatusReservationRepository;
-import com.library.repository.AdherentRepository;
-import com.library.repository.LivreRepository;
 import com.library.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,18 +18,13 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final HistoriqueStatusReservationRepository historiqueStatusReservationRepository;
-    private final AdherentRepository adherentRepository;
-    private final LivreRepository livreRepository;
 
     @Autowired
     public ReservationServiceImpl(ReservationRepository reservationRepository,
-                                 HistoriqueStatusReservationRepository historiqueStatusReservationRepository,
-                                 AdherentRepository adherentRepository,
-                                 LivreRepository livreRepository) {
+                                 HistoriqueStatusReservationRepository historiqueStatusReservationRepository) {
         this.reservationRepository = reservationRepository;
         this.historiqueStatusReservationRepository = historiqueStatusReservationRepository;
-        this.adherentRepository = adherentRepository;
-        this.livreRepository = livreRepository;
+
     }
 
     @Override
@@ -57,31 +48,6 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> findByAdherent(Adherent adherent) {
-        return reservationRepository.findByAdherent(adherent);
-    }
-
-    @Override
-    public List<Reservation> findByLivre(Livre livre) {
-        return reservationRepository.findByLivre(livre);
-    }
-
-    @Override
-    public List<Reservation> findByDateReservationBetween(LocalDate dateDebut, LocalDate dateFin) {
-        return reservationRepository.findByDateReservationBetween(dateDebut, dateFin);
-    }
-
-    @Override
-    public List<Reservation> findByDateExpirationBefore(LocalDate date) {
-        return reservationRepository.findByDateExpirationBefore(date);
-    }
-
-    @Override
-    public Optional<Reservation> findByAdherentAndLivre(Adherent adherent, Livre livre) {
-        return reservationRepository.findByAdherentAndLivre(adherent, livre);
-    }
-
-    @Override
     @Transactional
     public Reservation updateStatusReservation(Long reservationId, StatusReservation statusReservation) {
         Reservation reservation = reservationRepository.findById(reservationId)
@@ -95,17 +61,5 @@ public class ReservationServiceImpl implements ReservationService {
         historiqueStatusReservationRepository.save(historique);
         
         return reservation;
-    }
-
-    @Override
-    public boolean isLivreReservedByAdherent(Long livreId, Long adherentId) {
-        Livre livre = livreRepository.findById(livreId).orElse(null);
-        Adherent adherent = adherentRepository.findById(adherentId).orElse(null);
-        
-        if (livre == null || adherent == null) {
-            return false;
-        }
-        
-        return reservationRepository.findByAdherentAndLivre(adherent, livre).isPresent();
     }
 }

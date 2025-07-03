@@ -72,6 +72,7 @@ C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliothequ
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\repository\AdherentRepository.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\model\Pret.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\repository\StatusProlongementRepository.java
+C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\controller\AdherentController.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\repository\TypePretRepository.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\model\Penalite.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\LivreServiceImpl.java

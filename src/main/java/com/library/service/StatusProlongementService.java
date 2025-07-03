@@ -9,5 +9,4 @@ public interface StatusProlongementService {
     Optional<StatusProlongement> getStatusProlongementById(Long id);
     StatusProlongement saveStatusProlongement(StatusProlongement statusProlongement);
     void deleteStatusProlongement(Long id);
-    Optional<StatusProlongement> findByNom(Integer nom);
 }

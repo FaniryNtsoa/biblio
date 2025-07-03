@@ -49,15 +49,6 @@ public class HistoriqueProlongementServiceImpl implements HistoriqueProlongement
         historiqueProlongementRepository.deleteById(id);
     }
 
-    @Override
-    public List<HistoriqueProlongement> findByProlongement(Prolongement prolongement) {
-        return historiqueProlongementRepository.findByProlongement(prolongement);
-    }
-
-    @Override
-    public List<HistoriqueProlongement> findByStatusProlongement(StatusProlongement statusProlongement) {
-        return historiqueProlongementRepository.findByStatusProlongement(statusProlongement);
-    }
 
     @Override
     @Transactional

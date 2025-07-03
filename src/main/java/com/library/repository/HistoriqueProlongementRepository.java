@@ -1,14 +1,11 @@
 package com.library.repository;
 
-import com.library.model.HistoriqueProlongement;
-import com.library.model.Prolongement;
-import com.library.model.StatusProlongement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
+
+import com.library.model.HistoriqueProlongement;
 
 @Repository
 public interface HistoriqueProlongementRepository extends JpaRepository<HistoriqueProlongement, Long> {
-    List<HistoriqueProlongement> findByProlongement(Prolongement prolongement);
-    List<HistoriqueProlongement> findByStatusProlongement(StatusProlongement statusProlongement);
+    // Interface vide - utilise uniquement les méthodes héritées de JpaRepository
 }

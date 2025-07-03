@@ -9,5 +9,4 @@ public interface CategorieService {
     Optional<Categorie> getCategorieById(Long id);
     Categorie saveCategorie(Categorie categorie);
     void deleteCategorie(Long id);
-    Optional<Categorie> findByNom(String nom);
 }

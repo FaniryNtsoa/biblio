@@ -9,5 +9,4 @@ public interface TypePretService {
     Optional<TypePret> getTypePretById(Long id);
     TypePret saveTypePret(TypePret typePret);
     void deleteTypePret(Long id);
-    Optional<TypePret> findByNom(String nom);
 }

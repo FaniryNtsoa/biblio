@@ -1,13 +1,13 @@
 package com.library.service.impl;
 
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 import com.library.model.GestionAdherent;
-import com.library.model.TypeAdherent;
 import com.library.repository.GestionAdherentRepository;
 import com.library.service.GestionAdherentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class GestionAdherentServiceImpl implements GestionAdherentService {
@@ -39,25 +39,4 @@ public class GestionAdherentServiceImpl implements GestionAdherentService {
         gestionAdherentRepository.deleteById(id);
     }
 
-    @Override
-    public List<GestionAdherent> findByTypeAdherent(TypeAdherent typeAdherent) {
-        return gestionAdherentRepository.findByTypeAdherent(typeAdherent);
-    }
-
-    @Override
-    public Optional<GestionAdherent> findByTypeAdherentId(Long typeAdherentId) {
-        return gestionAdherentRepository.findByTypeAdherentId(typeAdherentId);
-    }
-
-    @Override
-    public Integer getDureePretByTypeAdherent(Long typeAdherentId) {
-        Optional<GestionAdherent> gestionAdherent = gestionAdherentRepository.findByTypeAdherentId(typeAdherentId);
-        return gestionAdherent.map(GestionAdherent::getDureePret).orElse(null);
-    }
-
-    @Override
-    public Integer getNombrePretMaxByTypeAdherent(Long typeAdherentId) {
-        Optional<GestionAdherent> gestionAdherent = gestionAdherentRepository.findByTypeAdherentId(typeAdherentId);
-        return gestionAdherent.map(GestionAdherent::getNombrePretMax).orElse(null);
-    }
 }

@@ -38,8 +38,4 @@ public class TypePretServiceImpl implements TypePretService {
         typePretRepository.deleteById(id);
     }
 
-    @Override
-    public Optional<TypePret> findByNom(String nom) {
-        return typePretRepository.findByNom(nom);
-    }
 }

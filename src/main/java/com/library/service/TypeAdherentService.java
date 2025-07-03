@@ -9,5 +9,4 @@ public interface TypeAdherentService {
     Optional<TypeAdherent> getTypeAdherentById(Long id);
     TypeAdherent saveTypeAdherent(TypeAdherent typeAdherent);
     void deleteTypeAdherent(Long id);
-    Optional<TypeAdherent> findByNom(String nom);
 }

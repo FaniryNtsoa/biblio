@@ -38,8 +38,4 @@ public class TypeUserServiceImpl implements TypeUserService {
         typeUserRepository.deleteById(id);
     }
 
-    @Override
-    public Optional<TypeUser> findByNom(String nom) {
-        return typeUserRepository.findByNom(nom);
-    }
 }
