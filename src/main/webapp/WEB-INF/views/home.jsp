@@ -12,29 +12,8 @@
 </head>
 <body>
     <div class="app-container">
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <h2><i class="fas fa-book-open"></i> Bibliothèque</h2>
-            </div>
-            <div class="sidebar-user">
-                <div class="user-avatar">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-                <div class="user-info">
-                    <h3>${adherent.prenom} ${adherent.nom}</h3>
-                    <p>${adherent.typeAdherent.nom}</p>
-                </div>
-            </div>
-            <ul class="sidebar-menu">
-                <li class="active"><a href="#"><i class="fas fa-home"></i> Accueil</a></li>
-                <li><a href="#"><i class="fas fa-search"></i> Rechercher</a></li>
-                <li><a href="#"><i class="fas fa-book"></i> Mes emprunts</a></li>
-                <li><a href="#"><i class="fas fa-clock"></i> Mes réservations</a></li>
-                <li><a href="#"><i class="fas fa-history"></i> Historique</a></li>
-                <li><a href="#"><i class="fas fa-cog"></i> Paramètres</a></li>
-                <li><a href="<c:url value='/logout'/>"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
-            </ul>
-        </nav>
+        <c:set var="currentPage" value="home" scope="request" />
+        <jsp:include page="fragments/sidebar.jsp" />
         
         <main class="content">
             <header class="content-header">
@@ -75,6 +54,24 @@
                     </div>
                 </div>
                 
+                <div class="quick-actions">
+                    <h2>Actions rapides</h2>
+                    <div class="action-buttons">
+                        <a href="<c:url value='/livres'/>" class="action-button">
+                            <i class="fas fa-book"></i>
+                            <span>Consulter le catalogue</span>
+                        </a>
+                        <a href="#" class="action-button">
+                            <i class="fas fa-bookmark"></i>
+                            <span>Voir mes emprunts</span>
+                        </a>
+                        <a href="#" class="action-button">
+                            <i class="fas fa-clock"></i>
+                            <span>Gérer mes réservations</span>
+                        </a>
+                    </div>
+                </div>
+                
                 <div class="recent-books">
                     <h2>Nouveautés</h2>
                     <div class="book-list">
@@ -84,5 +81,25 @@
             </div>
         </main>
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation des cartes du dashboard
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('slide-in');
+                }, 100 * index);
+            });
+            
+            // Animation des boutons d'action
+            const actionButtons = document.querySelectorAll('.action-button');
+            actionButtons.forEach((button, index) => {
+                setTimeout(() => {
+                    button.classList.add('fade-in');
+                }, 300 + (100 * index));
+            });
+        });
+    </script>
 </body>
 </html>
