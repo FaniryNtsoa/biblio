@@ -16,4 +16,5 @@ public interface ExemplaireService {
     long countByLivre(Livre livre);
     Exemplaire updateEtatExemplaire(Long exemplaireId, EtatExemplaire etatExemplaire);
     List<Exemplaire> createMultipleExemplaires(Livre livre, EtatExemplaire etatExemplaire, int count);
+    List<Exemplaire> getRecentExemplaires(int limit);
 }

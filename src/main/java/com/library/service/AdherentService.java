@@ -1,10 +1,11 @@
 package com.library.service;
 
-import com.library.model.Adherent;
-import com.library.model.TypeAdherent;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import com.library.model.Adherent;
+import com.library.model.TypeAdherent;
 
 public interface AdherentService {
     List<Adherent> getAllAdherents();
@@ -17,4 +18,6 @@ public interface AdherentService {
     Optional<Adherent> findByNomAndPrenom(String nom, String prenom);
     List<Adherent> findByDtnBefore(LocalDate date);
     boolean checkMotDePasse(Long id, String motDePasse);
+    boolean authenticateAdherent(String nom, String prenom, String motDePasse);
+    boolean authenticateAdherentByNom(String nom, String motDePasse);
 }

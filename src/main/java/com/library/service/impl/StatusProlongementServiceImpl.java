@@ -38,8 +38,5 @@ public class StatusProlongementServiceImpl implements StatusProlongementService 
         statusProlongementRepository.deleteById(id);
     }
 
-    @Override
-    public Optional<StatusProlongement> findByNom(Integer nom) {
-        return statusProlongementRepository.findByNom(nom);
-    }
+
 }

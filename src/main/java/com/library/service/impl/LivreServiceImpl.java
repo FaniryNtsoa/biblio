@@ -8,8 +8,7 @@ import com.library.service.LivreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,7 +18,8 @@ public class LivreServiceImpl implements LivreService {
     private final CategorieRepository categorieRepository;
 
     @Autowired
-    public LivreServiceImpl(LivreRepository livreRepository, CategorieRepository categorieRepository) {
+    public LivreServiceImpl(LivreRepository livreRepository, 
+                           CategorieRepository categorieRepository) {
         this.livreRepository = livreRepository;
         this.categorieRepository = categorieRepository;
     }
@@ -46,22 +46,34 @@ public class LivreServiceImpl implements LivreService {
 
     @Override
     public List<Livre> findByTitre(String titre) {
-        return livreRepository.findByTitreContainingIgnoreCase(titre);
+        // Implémentation sans méthode personnalisée dans le repository
+        return livreRepository.findAll().stream()
+                .filter(livre -> livre.getTitre().toLowerCase().contains(titre.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Livre> findByAuteur(String auteur) {
-        return livreRepository.findByAuteurContainingIgnoreCase(auteur);
+        // Implémentation sans méthode personnalisée dans le repository
+        return livreRepository.findAll().stream()
+                .filter(livre -> livre.getAuteur().toLowerCase().contains(auteur.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Livre> findByAgeMin(Integer age) {
-        return livreRepository.findByAgeLessThanEqual(age);
+        // Implémentation sans méthode personnalisée dans le repository
+        return livreRepository.findAll().stream()
+                .filter(livre -> livre.getAgeMin() <= age)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Livre> findByLangue(String langue) {
-        return livreRepository.findByLangue(langue);
+        // Implémentation sans méthode personnalisée dans le repository
+        return livreRepository.findAll().stream()
+                .filter(livre -> livre.getLangue().equalsIgnoreCase(langue))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -88,4 +100,5 @@ public class LivreServiceImpl implements LivreService {
 
         return livreRepository.save(livre);
     }
+
 }

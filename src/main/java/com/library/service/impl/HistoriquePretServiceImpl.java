@@ -51,21 +51,6 @@ public class HistoriquePretServiceImpl implements HistoriquePretService {
     }
 
     @Override
-    public List<HistoriquePret> findByPret(Pret pret) {
-        return historiquePretRepository.findByPret(pret);
-    }
-
-    @Override
-    public List<HistoriquePret> findByStatusPret(StatusPret statusPret) {
-        return historiquePretRepository.findByStatusPret(statusPret);
-    }
-
-    @Override
-    public List<HistoriquePret> findByDateRetourBetween(LocalDate dateDebut, LocalDate dateFin) {
-        return historiquePretRepository.findByDateRetourBetween(dateDebut, dateFin);
-    }
-
-    @Override
     @Transactional
     public HistoriquePret createHistoriquePret(Long pretId, Long statusPretId, LocalDate dateRetour) {
         Pret pret = pretRepository.findById(pretId)

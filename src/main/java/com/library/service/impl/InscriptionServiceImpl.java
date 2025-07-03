@@ -1,7 +1,6 @@
 package com.library.service.impl;
 
 import com.library.model.Inscription;
-import com.library.model.Adherent;
 import com.library.repository.InscriptionRepository;
 import com.library.service.InscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,28 +38,6 @@ public class InscriptionServiceImpl implements InscriptionService {
     @Override
     public void deleteInscription(Long id) {
         inscriptionRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Inscription> findByAdherent(Adherent adherent) {
-        return inscriptionRepository.findByAdherent(adherent);
-    }
-
-    @Override
-    public List<Inscription> findByDateInscriptionBetween(LocalDate dateDebut, LocalDate dateFin) {
-        return inscriptionRepository.findByDateInscriptionBetween(dateDebut, dateFin);
-    }
-
-    @Override
-    public List<Inscription> findByDateExpirationBefore(LocalDate date) {
-        return inscriptionRepository.findByDateExpirationBefore(date);
-    }
-
-    @Override
-    public boolean isInscriptionActive(Long adherentId) {
-        LocalDate currentDate = LocalDate.now();
-        Optional<Inscription> activeInscription = inscriptionRepository.findActiveInscriptionByAdherentId(adherentId, currentDate);
-        return activeInscription.isPresent();
     }
 
     @Override

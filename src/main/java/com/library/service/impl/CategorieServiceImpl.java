@@ -38,8 +38,4 @@ public class CategorieServiceImpl implements CategorieService {
         categorieRepository.deleteById(id);
     }
 
-    @Override
-    public Optional<Categorie> findByNom(String nom) {
-        return categorieRepository.findByNom(nom);
-    }
 }

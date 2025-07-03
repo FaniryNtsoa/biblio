@@ -9,5 +9,4 @@ public interface StatusPretService {
     Optional<StatusPret> getStatusPretById(Long id);
     StatusPret saveStatusPret(StatusPret statusPret);
     void deleteStatusPret(Long id);
-    Optional<StatusPret> findByNom(String nom);
 }

@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PenaliteServiceImpl implements PenaliteService {
@@ -46,25 +48,38 @@ public class PenaliteServiceImpl implements PenaliteService {
 
     @Override
     public List<Penalite> findByPret(Pret pret) {
-        return penaliteRepository.findByPret(pret);
+        return penaliteRepository.findAll().stream()
+                .filter(penalite -> penalite.getPret().equals(pret))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Penalite> findByDatePenaliteBetween(LocalDate dateDebut, LocalDate dateFin) {
-        return penaliteRepository.findByDatePenaliteBetween(dateDebut, dateFin);
+    public List<Penalite> findByDateBetween(LocalDate dateDebut, LocalDate dateFin) {
+        return penaliteRepository.findAll().stream()
+                .filter(penalite -> !penalite.getDatePenalite().isBefore(dateDebut) && 
+                                   !penalite.getDatePenalite().isAfter(dateFin))
+                .collect(Collectors.toList());
     }
-
+    
     @Override
     @Transactional
-    public Penalite createPenaliteForPret(Long pretId, String description) {
+    public Penalite createPenaliteForPret(Long pretId, String motif) {
         Pret pret = pretRepository.findById(pretId)
                 .orElseThrow(() -> new RuntimeException("Prêt not found with id: " + pretId));
         
         Penalite penalite = new Penalite();
         penalite.setPret(pret);
+        penalite.setDescription(motif);
         penalite.setDatePenalite(LocalDate.now());
-        penalite.setDescription(description);
         
         return penaliteRepository.save(penalite);
+    }
+    
+    @Override
+    public List<Penalite> getRecentPenalites(int limit) {
+        return penaliteRepository.findAll().stream()
+                .sorted(Comparator.comparing(Penalite::getDatePenalite).reversed())
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 }

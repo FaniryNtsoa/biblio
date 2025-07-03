@@ -1,36 +1,27 @@
 package com.library.service.impl;
 
-import com.library.model.Pret;
-import com.library.model.Adherent;
-import com.library.model.TypePret;
-import com.library.model.StatusPret;
-import com.library.model.HistoriquePret;
-import com.library.model.Prolongement;
-import com.library.repository.PretRepository;
-import com.library.repository.HistoriquePretRepository;
-import com.library.repository.ProlongementRepository;
-import com.library.service.PretService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.library.model.Adherent;
+import com.library.model.Pret;
+import com.library.model.TypePret;
+import com.library.repository.PretRepository;
+import com.library.service.PretService;
 
 @Service
 public class PretServiceImpl implements PretService {
 
     private final PretRepository pretRepository;
-    private final HistoriquePretRepository historiquePretRepository;
-    private final ProlongementRepository prolongementRepository;
 
     @Autowired
-    public PretServiceImpl(PretRepository pretRepository, 
-                           HistoriquePretRepository historiquePretRepository,
-                           ProlongementRepository prolongementRepository) {
+    public PretServiceImpl(PretRepository pretRepository) {
         this.pretRepository = pretRepository;
-        this.historiquePretRepository = historiquePretRepository;
-        this.prolongementRepository = prolongementRepository;
     }
 
     @Override
@@ -55,52 +46,34 @@ public class PretServiceImpl implements PretService {
 
     @Override
     public List<Pret> findByAdherent(Adherent adherent) {
-        return pretRepository.findByAdherent(adherent);
+        // Implémentation sans méthode personnalisée dans le repository
+        return pretRepository.findAll().stream()
+                .filter(pret -> pret.getAdherent().equals(adherent))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Pret> findByTypePret(TypePret typePret) {
-        return pretRepository.findByTypePret(typePret);
+        // Implémentation sans méthode personnalisée dans le repository
+        return pretRepository.findAll().stream()
+                .filter(pret -> pret.getTypePret().equals(typePret))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Pret> findByDatePretBetween(LocalDate dateDebut, LocalDate dateFin) {
-        return pretRepository.findByDatePretBetween(dateDebut, dateFin);
+        // Implémentation sans méthode personnalisée dans le repository
+        return pretRepository.findAll().stream()
+                .filter(pret -> !pret.getDatePret().isBefore(dateDebut) && !pret.getDatePret().isAfter(dateFin))
+                .collect(Collectors.toList());
     }
 
     @Override
     public long countByAdherent(Adherent adherent) {
-        return pretRepository.countByAdherent(adherent);
+        // Implémentation sans méthode personnalisée dans le repository
+        return pretRepository.findAll().stream()
+                .filter(pret -> pret.getAdherent().equals(adherent))
+                .count();
     }
 
-    @Override
-    @Transactional
-    public Pret updateStatusPret(Long pretId, StatusPret statusPret, LocalDate dateRetour) {
-        Pret pret = pretRepository.findById(pretId)
-                .orElseThrow(() -> new RuntimeException("Prêt not found with id: " + pretId));
-
-        HistoriquePret historique = new HistoriquePret();
-        historique.setPret(pret);
-        historique.setStatusPret(statusPret);
-        historique.setDateRetour(dateRetour);
-        
-        historiquePretRepository.save(historique);
-        
-        return pret;
-    }
-
-    @Override
-    @Transactional
-    public Pret prolongerPret(Long pretId, int nbJours) {
-        Pret pret = pretRepository.findById(pretId)
-                .orElseThrow(() -> new RuntimeException("Prêt not found with id: " + pretId));
-
-        Prolongement prolongement = new Prolongement();
-        prolongement.setPret(pret);
-        prolongement.setNbJour(nbJours);
-        
-        prolongementRepository.save(prolongement);
-        
-        return pret;
-    }
 }

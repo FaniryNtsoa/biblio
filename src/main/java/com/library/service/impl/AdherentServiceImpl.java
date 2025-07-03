@@ -1,14 +1,17 @@
 package com.library.service.impl;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.library.model.Adherent;
 import com.library.model.TypeAdherent;
 import com.library.repository.AdherentRepository;
 import com.library.service.AdherentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AdherentServiceImpl implements AdherentService {
@@ -42,32 +45,56 @@ public class AdherentServiceImpl implements AdherentService {
 
     @Override
     public List<Adherent> findByNom(String nom) {
-        return adherentRepository.findByNomContainingIgnoreCase(nom);
+        return adherentRepository.findAll().stream()
+                .filter(adherent -> adherent.getNom().toLowerCase().contains(nom.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Adherent> findByPrenom(String prenom) {
-        return adherentRepository.findByPrenomContainingIgnoreCase(prenom);
+        return adherentRepository.findAll().stream()
+                .filter(adherent -> adherent.getPrenom().toLowerCase().contains(prenom.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Adherent> findByTypeAdherent(TypeAdherent typeAdherent) {
-        return adherentRepository.findByTypeAdherent(typeAdherent);
+        return adherentRepository.findAll().stream()
+                .filter(adherent -> adherent.getTypeAdherent().equals(typeAdherent))
+                .collect(Collectors.toList());
     }
 
     @Override
     public Optional<Adherent> findByNomAndPrenom(String nom, String prenom) {
-        return adherentRepository.findByNomAndPrenom(nom, prenom);
+        return adherentRepository.findAll().stream()
+                .filter(adherent -> adherent.getNom().equalsIgnoreCase(nom) && 
+                                   adherent.getPrenom().equalsIgnoreCase(prenom))
+                .findFirst();
     }
 
     @Override
     public List<Adherent> findByDtnBefore(LocalDate date) {
-        return adherentRepository.findByDtnBefore(date);
+        return adherentRepository.findAll().stream()
+                .filter(adherent -> adherent.getDtn().isBefore(date))
+                .collect(Collectors.toList());
     }
 
     @Override
     public boolean checkMotDePasse(Long id, String motDePasse) {
-        Optional<Adherent> adherent = adherentRepository.findById(id);
+        Optional<Adherent> adherent = getAdherentById(id);
         return adherent.map(a -> a.getMotDePasse().equals(motDePasse)).orElse(false);
+    }
+
+    @Override
+    public boolean authenticateAdherent(String nom, String prenom, String motDePasse) {
+        Optional<Adherent> adherent = findByNomAndPrenom(nom, prenom);
+        return adherent.map(a -> a.getMotDePasse().equals(motDePasse)).orElse(false);
+    }
+
+    @Override
+    public boolean authenticateAdherentByNom(String nom, String motDePasse) {
+        List<Adherent> adherents = findByNom(nom);
+        return adherents.stream()
+                .anyMatch(a -> a.getMotDePasse().equals(motDePasse));
     }
 }

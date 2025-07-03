@@ -38,8 +38,4 @@ public class StatusReservationServiceImpl implements StatusReservationService {
         statusReservationRepository.deleteById(id);
     }
 
-    @Override
-    public Optional<StatusReservation> findByNom(String nom) {
-        return statusReservationRepository.findByNom(nom);
-    }
 }

@@ -9,5 +9,4 @@ public interface TypeUserService {
     Optional<TypeUser> getTypeUserById(Long id);
     TypeUser saveTypeUser(TypeUser typeUser);
     void deleteTypeUser(Long id);
-    Optional<TypeUser> findByNom(String nom);
 }
