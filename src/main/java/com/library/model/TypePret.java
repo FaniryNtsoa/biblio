@@ -15,6 +15,9 @@ public class TypePret {
     @Column(nullable = false, length = 50)
     private String nom;
     
+    @Column(name = "sur_place", nullable = false)
+    private Boolean surPlace = false;
+    
     @OneToMany(mappedBy = "typePret")
     private Set<Pret> prets = new HashSet<>();
 
@@ -35,6 +38,14 @@ public class TypePret {
         this.nom = nom;
     }
 
+    public Boolean getSurPlace() {
+        return surPlace;
+    }
+
+    public void setSurPlace(Boolean surPlace) {
+        this.surPlace = surPlace;
+    }
+
     public Set<Pret> getPrets() {
         return prets;
     }
@@ -43,3 +54,4 @@ public class TypePret {
         this.prets = prets;
     }
 }
+

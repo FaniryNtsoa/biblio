@@ -71,6 +71,18 @@ public class MembershipCheckFilter implements Filter {
                 // L'adhérent n'est pas un membre actif, rediriger vers la page d'inscription
                 httpRequest.getSession().setAttribute("redirectAfterInscription", path);
                 httpRequest.getSession().setAttribute("needMembership", true);
+                
+                // Ajouter un message personnalisé selon la page demandée
+                String message = "Cette fonctionnalité nécessite une adhésion active.";
+                if (path.startsWith("/prets")) {
+                    message = "Vous devez être membre pour emprunter des livres.";
+                } else if (path.startsWith("/reservations")) {
+                    message = "Vous devez être membre pour faire des réservations.";
+                } else if (path.startsWith("/historique")) {
+                    message = "Vous devez être membre pour consulter votre historique.";
+                }
+                
+                httpRequest.getSession().setAttribute("membershipMessage", message);
                 httpResponse.sendRedirect(httpRequest.getContextPath() + "/inscription");
                 return;
             }

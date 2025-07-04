@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HistoriquePretRepository extends JpaRepository<HistoriquePret, Long> {
-    // Utilise uniquement les méthodes héritées de JpaRepository
+
 }

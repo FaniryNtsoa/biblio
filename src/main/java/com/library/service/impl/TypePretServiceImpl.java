@@ -19,11 +19,6 @@ public class TypePretServiceImpl implements TypePretService {
     }
 
     @Override
-    public List<TypePret> getAllTypePrets() {
-        return typePretRepository.findAll();
-    }
-
-    @Override
     public Optional<TypePret> getTypePretById(Long id) {
         return typePretRepository.findById(id);
     }
@@ -36,6 +31,11 @@ public class TypePretServiceImpl implements TypePretService {
     @Override
     public void deleteTypePret(Long id) {
         typePretRepository.deleteById(id);
+    }
+
+    @Override
+    public List<TypePret> getAllTypesPret() {
+        return typePretRepository.findAll();
     }
 
 }

@@ -62,7 +62,10 @@ public class HistoriquePretServiceImpl implements HistoriquePretService {
         HistoriquePret historique = new HistoriquePret();
         historique.setPret(pret);
         historique.setStatusPret(statusPret);
+        historique.setExemplaire(pret.getExemplaire());
         historique.setDateRetour(dateRetour);
+        historique.setDateChangement(LocalDate.now());
+        historique.setCommentaire("Changement de statut vers: " + statusPret.getNom());
         
         return historiquePretRepository.save(historique);
     }

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StatusPretRepository extends JpaRepository<StatusPret, Long> {
-    // Interface vide - utilise uniquement les méthodes héritées de JpaRepository
+
 }
