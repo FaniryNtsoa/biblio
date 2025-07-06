@@ -37,5 +37,43 @@ public class StatusReservationServiceImpl implements StatusReservationService {
     public void deleteStatusReservation(Long id) {
         statusReservationRepository.deleteById(id);
     }
-
+    
+    @Override
+    public Optional<StatusReservation> findByNom(String nom) {
+        if (nom == null) {
+            return Optional.empty();
+        }
+        
+        // Vérifier si statuts de réservation existent déjà
+        List<StatusReservation> statuts = statusReservationRepository.findAll();
+        if (statuts.isEmpty()) {
+            // Créer les statuts par défaut
+            StatusReservation enAttente = new StatusReservation();
+            enAttente.setNom("EN_ATTENTE");
+            statusReservationRepository.save(enAttente);
+            
+            StatusReservation confirmee = new StatusReservation();
+            confirmee.setNom("CONFIRMEE");
+            statusReservationRepository.save(confirmee);
+            
+            StatusReservation annulee = new StatusReservation();
+            annulee.setNom("ANNULEE");
+            statusReservationRepository.save(annulee);
+            
+            StatusReservation expiree = new StatusReservation();
+            expiree.setNom("EXPIREE");
+            statusReservationRepository.save(expiree);
+            
+            StatusReservation rejetee = new StatusReservation();
+            rejetee.setNom("REJETEE");
+            statusReservationRepository.save(rejetee);
+            
+            // Récupérer tous les statuts après création
+            statuts = statusReservationRepository.findAll();
+        }
+        
+        return statuts.stream()
+                .filter(status -> nom.equals(status.getNom()))
+                .findFirst();
+    }
 }

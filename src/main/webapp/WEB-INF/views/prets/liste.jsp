@@ -20,9 +20,6 @@
             <header class="content-header">
                 <h1>Mes prêts</h1>
                 <div class="header-actions">
-                    <a href="<c:url value='/prets/historique'/>" class="btn btn-secondary">
-                        <i class="fas fa-history"></i> Historique complet
-                    </a>
                     <a href="<c:url value='/prets/nouveau'/>" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Nouveau prêt
                     </a>
@@ -101,9 +98,6 @@
                     </a>
                     <a href="<c:url value='/prets?statutFilter=retournes'/>" class="filter-tab ${currentFilter == 'retournes' ? 'active' : ''}">
                         <i class="fas fa-check-circle"></i> Retournés récemment
-                    </a>
-                    <a href="<c:url value='/prets?statutFilter=tous'/>" class="filter-tab ${currentFilter == 'tous' ? 'active' : ''}">
-                        <i class="fas fa-list"></i> Tous
                     </a>
                 </div>
                 

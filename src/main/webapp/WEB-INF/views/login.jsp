@@ -15,7 +15,7 @@
         <div class="auth-wrapper">
             <div class="auth-header">
                 <h1><i class="fas fa-book-open"></i> Bibliothèque</h1>
-                <p>Accédez à votre espace adhérent</p>
+                <p>Connectez-vous pour accéder à votre compte</p>
             </div>
             
             <c:if test="${not empty error}">
@@ -33,10 +33,10 @@
             <div class="auth-form">
                 <form action="<c:url value='/login'/>" method="post">
                     <div class="form-group">
-                        <label for="nom">Nom</label>
+                        <label for="nom">Nom d'utilisateur</label>
                         <div class="input-icon">
                             <i class="fas fa-user"></i>
-                            <input type="text" id="nom" name="nom" required placeholder="Votre nom">
+                            <input type="text" id="nom" name="nom" required placeholder="Votre nom d'utilisateur">
                         </div>
                     </div>
                     
@@ -57,9 +57,37 @@
                 
                 <div class="auth-footer">
                     <p>Vous n'avez pas de compte ? <a href="<c:url value='/register'/>">S'inscrire</a></p>
+                    <hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;" />
+                    <p>
+                        <a href="<c:url value='/bibliothecaire/login'/>" class="bibliothecaire-link">
+                            <i class="fas fa-user-tie"></i> Connexion bibliothécaire
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+    
+    <style>
+        .bibliothecaire-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            color: #555;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .bibliothecaire-link i {
+            margin-right: 8px;
+        }
+        
+        .bibliothecaire-link:hover {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+    </style>
 </body>
 </html>

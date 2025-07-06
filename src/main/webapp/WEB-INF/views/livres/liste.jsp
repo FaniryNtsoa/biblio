@@ -181,6 +181,12 @@
                                                 <i class="fas fa-times"></i> Non disponible
                                             </button>
                                         </c:if>
+                                        <!-- Bouton de réservation -->
+                                        <c:if test="${isActiveMember}">
+                                            <a href="<c:url value='/reservations/nouveau?livreId=${livre.id}'/>" class="btn btn-sm btn-secondary" style="flex: 1; text-align: center;">
+                                                <i class="fas fa-calendar-alt"></i> Réserver
+                                            </a>
+                                        </c:if>
                                     </div>
                                 </div>
                             </c:forEach>
@@ -197,6 +203,29 @@
             </div>
         </main>
     </div>
+    
+    <style>
+        .livre-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #3949ab;
+            color: #3949ab;
+        }
+        
+        .btn-outline:hover {
+            background-color: #f5f8ff;
+        }
+    </style>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {

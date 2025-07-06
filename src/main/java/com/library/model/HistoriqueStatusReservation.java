@@ -21,6 +21,9 @@ public class HistoriqueStatusReservation {
     
     @Column(name = "date_reservation", nullable = false)
     private LocalDate dateReservation;
+    
+    @Column(name = "date_changement", nullable = false)
+    private LocalDate dateChangement;
 
     // Getters and Setters
     public Long getId() {
@@ -53,5 +56,13 @@ public class HistoriqueStatusReservation {
 
     public void setDateReservation(LocalDate dateReservation) {
         this.dateReservation = dateReservation;
+    }
+    
+    public LocalDate getDateChangement() {
+        return dateChangement;
+    }
+    
+    public void setDateChangement(LocalDate dateChangement) {
+        this.dateChangement = dateChangement;
     }
 }

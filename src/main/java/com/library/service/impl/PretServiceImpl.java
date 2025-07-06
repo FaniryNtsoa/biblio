@@ -12,18 +12,24 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.library.model.Adherent;
+import com.library.model.Exemplaire;
 import com.library.model.HistoriquePret;
 import com.library.model.Penalite;
 import com.library.model.Pret;
+import com.library.model.Reservation;
 import com.library.model.StatusPret;
 import com.library.model.TypePret;
 import com.library.repository.HistoriquePretRepository;
 import com.library.repository.PenaliteRepository;
 import com.library.repository.PretRepository;
 import com.library.repository.StatusPretRepository;
+import com.library.repository.TypePretRepository;
 import com.library.service.PretService;
+import com.library.service.ExemplaireAvailabilityService;
+import com.library.service.GestionAdherentService;
 
 @Service
 public class PretServiceImpl implements PretService {
@@ -32,16 +38,25 @@ public class PretServiceImpl implements PretService {
     private final HistoriquePretRepository historiquePretRepository;
     private final StatusPretRepository statusPretRepository;
     private final PenaliteRepository penaliteRepository;
+    private final TypePretRepository typePretRepository;
+    private final ExemplaireAvailabilityService exemplaireAvailabilityService;
+    private final GestionAdherentService gestionAdherentService;
 
     @Autowired
     public PretServiceImpl(PretRepository pretRepository,
                           HistoriquePretRepository historiquePretRepository,
                           StatusPretRepository statusPretRepository,
-                          PenaliteRepository penaliteRepository) {
+                          PenaliteRepository penaliteRepository,
+                          TypePretRepository typePretRepository,
+                          ExemplaireAvailabilityService exemplaireAvailabilityService,
+                          GestionAdherentService gestionAdherentService) {
         this.pretRepository = pretRepository;
         this.historiquePretRepository = historiquePretRepository;
         this.statusPretRepository = statusPretRepository;
         this.penaliteRepository = penaliteRepository;
+        this.typePretRepository = typePretRepository;
+        this.exemplaireAvailabilityService = exemplaireAvailabilityService;
+        this.gestionAdherentService = gestionAdherentService;
     }
 
     @Override
@@ -225,6 +240,53 @@ public class PretServiceImpl implements PretService {
         return penaliteRepository.save(penalite);
     }
     
+    @Override
+    @Transactional
+    public Pret createPretFromReservation(Reservation reservation) {
+        // Trouver un exemplaire disponible pour le livre réservé
+        Exemplaire exemplaire = exemplaireAvailabilityService.getFirstAvailableExemplaire(reservation.getLivre());
+        if (exemplaire == null) {
+            throw new RuntimeException("Aucun exemplaire disponible pour ce livre");
+        }
+        
+        // Trouver le type de prêt "a domicile"
+        TypePret typePret = typePretRepository.findAll().stream()
+                .filter(type -> !type.getSurPlace())
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Type de prêt 'a domicile' non trouvé"));
+        
+        // Créer le prêt
+        Pret pret = new Pret();
+        pret.setAdherent(reservation.getAdherent());
+        pret.setExemplaire(exemplaire);
+        pret.setTypePret(typePret);
+        pret.setDatePret(reservation.getDateReservation());
+        
+        // Calculer la date de retour prévue
+        int dureePret = gestionAdherentService.getDureePretForAdherent(reservation.getAdherent());
+        pret.setDateRetourPrevue(reservation.getDateReservation().plusDays(dureePret));
+        
+        // Sauvegarder le prêt
+        Pret savedPret = savePret(pret);
+        
+        // Créer l'historique initial avec statut EN_COURS
+        StatusPret statusEnCours = statusPretRepository.findAll().stream()
+                .filter(status -> "EN_COURS".equals(status.getNom()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Statut EN_COURS non trouvé"));
+        
+        HistoriquePret historique = new HistoriquePret();
+        historique.setPret(savedPret);
+        historique.setExemplaire(exemplaire);
+        historique.setStatusPret(statusEnCours);
+        historique.setDateChangement(LocalDate.now());
+        historique.setCommentaire("Prêt créé à partir d'une réservation");
+        
+        historiquePretRepository.save(historique);
+        
+        return savedPret;
+    }
+
     // Méthodes utilitaires privées
     private StatusPret findStatusPretByNom(String nom) {
         return statusPretRepository.findAll().stream()
