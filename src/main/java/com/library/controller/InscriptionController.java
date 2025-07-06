@@ -60,6 +60,13 @@ public class InscriptionController {
         
         model.addAttribute("formattedDates", formattedDates);
         
+        // Récupérer et afficher le message personnalisé si disponible
+        String membershipMessage = (String) session.getAttribute("membershipMessage");
+        if (membershipMessage != null) {
+            model.addAttribute("membershipMessage", membershipMessage);
+            session.removeAttribute("membershipMessage");
+        }
+        
         return "inscription/formulaire";
     }
 
@@ -91,6 +98,13 @@ public class InscriptionController {
             redirectAttributes.addFlashAttribute("success", 
                 "Félicitations ! Votre inscription est valide jusqu'au " + 
                 inscription.getDateExpiration().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            
+            // Vérifier s'il y a une redirection prévue
+            String redirectAfterInscription = (String) session.getAttribute("redirectAfterInscription");
+            if (redirectAfterInscription != null) {
+                session.removeAttribute("redirectAfterInscription");
+                return "redirect:" + redirectAfterInscription;
+            }
                 
             return "redirect:/home";
         } catch (Exception e) {

@@ -33,6 +33,12 @@
                     </div>
                 </c:if>
                 
+                <c:if test="${not empty membershipMessage}">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> ${membershipMessage}
+                    </div>
+                </c:if>
+                
                 <c:choose>
                     <c:when test="${isActiveMember}">
                         <div class="alert alert-success">

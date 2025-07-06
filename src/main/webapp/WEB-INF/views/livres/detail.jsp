@@ -65,21 +65,6 @@
                             </div>
                         </div>
                         
-                        
-                        <div class="livre-detail-actions">
-                            <c:choose>
-                                <c:when test="${nombreExemplaires > 0}">
-                                    <a href="#" class="btn btn-primary">
-                                        <i class="fas fa-bookmark"></i> Réserver
-                                    </a>
-                                </c:when>
-                                <c:otherwise>
-                                    <button class="btn btn-secondary" disabled>
-                                        <i class="fas fa-times-circle"></i> Indisponible
-                                    </button>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
                     </div>
                 </div>
                 

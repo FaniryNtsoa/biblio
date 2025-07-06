@@ -30,13 +30,43 @@
             </a>
         </li>
         <li class="${currentPage == 'prets' ? 'active' : ''}">
-            <a href="<c:url value='/prets'/>"><i class="fas fa-bookmark"></i> Mes emprunts</a>
+            <c:choose>
+                <c:when test="${isActiveMember}">
+                    <a href="<c:url value='/prets'/>"><i class="fas fa-bookmark"></i> Mes emprunts</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="<c:url value='/inscription'/>" onclick="showMembershipAlert(event)">
+                        <i class="fas fa-bookmark"></i> Mes emprunts
+                        <span class="menu-alert"><i class="fas fa-lock"></i></span>
+                    </a>
+                </c:otherwise>
+            </c:choose>
         </li>
         <li class="${currentPage == 'reservations' ? 'active' : ''}">
-            <a href="<c:url value='/reservations'/>"><i class="fas fa-clock"></i> Mes réservations</a>
+            <c:choose>
+                <c:when test="${isActiveMember}">
+                    <a href="<c:url value='/reservations'/>"><i class="fas fa-clock"></i> Mes réservations</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="<c:url value='/inscription'/>" onclick="showMembershipAlert(event)">
+                        <i class="fas fa-clock"></i> Mes réservations
+                        <span class="menu-alert"><i class="fas fa-lock"></i></span>
+                    </a>
+                </c:otherwise>
+            </c:choose>
         </li>
         <li class="${currentPage == 'historique' ? 'active' : ''}">
-            <a href="<c:url value='/historique'/>"><i class="fas fa-history"></i> Historique</a>
+            <c:choose>
+                <c:when test="${isActiveMember}">
+                    <a href="<c:url value='/historique'/>"><i class="fas fa-history"></i> Historique</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="<c:url value='/inscription'/>" onclick="showMembershipAlert(event)">
+                        <i class="fas fa-history"></i> Historique
+                        <span class="menu-alert"><i class="fas fa-lock"></i></span>
+                    </a>
+                </c:otherwise>
+            </c:choose>
         </li>
         <li class="${currentPage == 'profil' ? 'active' : ''}">
             <a href="#"><i class="fas fa-user-cog"></i> Mon profil</a>
@@ -61,3 +91,12 @@
     100% { opacity: 0.5; }
 }
 </style>
+
+<script>
+function showMembershipAlert(event) {
+    event.preventDefault();
+    if (confirm('Cette fonctionnalité nécessite une adhésion active. Souhaitez-vous devenir membre maintenant ?')) {
+        window.location.href = '<c:url value="/inscription"/>';
+    }
+}
+</script>

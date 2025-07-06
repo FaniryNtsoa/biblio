@@ -18,10 +18,12 @@ C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliothequ
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\model\Prolongement.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\repository\StatusPretRepository.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\AdherentService.java
+C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\ExemplaireAvailabilityService.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\UserServiceImpl.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\repository\TypeUserRepository.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\InscriptionServiceImpl.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\StatusReservationService.java
+C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\PretValidationServiceImpl.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\StatusPretService.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\model\StatusReservation.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\EtatExemplaireServiceImpl.java
@@ -34,6 +36,7 @@ C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliothequ
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\model\Exemplaire.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\repository\TypeAdherentRepository.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\model\Livre.java
+C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\PretValidationService.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\repository\HistoriqueProlongementRepository.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\model\Inscription.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\HistoriqueStatusReservationService.java
@@ -57,6 +60,7 @@ C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliothequ
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\model\HistoriqueStatusReservation.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\ExemplaireService.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\GestionAdherentService.java
+C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\ExemplaireAvailabilityServiceImpl.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\StatusProlongementServiceImpl.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\TypePretServiceImpl.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\StatusPretServiceImpl.java
@@ -69,6 +73,7 @@ C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliothequ
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\AdherentServiceImpl.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\repository\EtatExemplaireRepository.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\service\impl\PretServiceImpl.java
+C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\controller\PretController.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\repository\HistoriquePretRepository.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\repository\CategorieRepository.java
 C:\Users\fanir\Documents\ITU\Faniry\S3\AdminSys\bibliotheque\gestion_bibliotheque\gestion_bibliotheque\src\main\java\com\library\model\User.java

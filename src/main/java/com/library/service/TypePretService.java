@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TypePretService {
-    List<TypePret> getAllTypePrets();
+    List<TypePret> getAllTypesPret();
     Optional<TypePret> getTypePretById(Long id);
     TypePret saveTypePret(TypePret typePret);
     void deleteTypePret(Long id);
