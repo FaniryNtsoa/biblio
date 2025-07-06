@@ -31,6 +31,25 @@
                 </div>
             </c:if>
             
+            <c:if test="${not empty warning}">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> ${warning}
+                </div>
+            </c:if>
+            
+            <c:if test="${hasPenalites}">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> ${warning}
+                </div>
+                <div class="date-warning-info" style="margin-bottom: 15px; padding: 10px; border-left: 4px solid #ffc107; background-color: #fff8e1;">
+                    <h4 style="color: #ff9800; margin-bottom: 10px;">
+                        <i class="fas fa-calendar-times"></i> Dates à éviter
+                    </h4>
+                    <p>Vous avez une pénalité active jusqu'au <strong>${dateFinPenalite}</strong>.</p>
+                    <p>Veuillez choisir une date de prêt <strong>après cette date</strong> pour que votre demande soit acceptée.</p>
+                </div>
+            </c:if>
+            
             <div class="membership-container">
                 <div class="membership-info">
                     <div class="membership-icon">

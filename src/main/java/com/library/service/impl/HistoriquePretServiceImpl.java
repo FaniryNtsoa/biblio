@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class HistoriquePretServiceImpl implements HistoriquePretService {
@@ -68,5 +69,12 @@ public class HistoriquePretServiceImpl implements HistoriquePretService {
         historique.setCommentaire("Changement de statut vers: " + statusPret.getNom());
         
         return historiquePretRepository.save(historique);
+    }
+
+    @Override
+    public List<HistoriquePret> findByPret(Pret pret) {
+        return historiquePretRepository.findAll().stream()
+                .filter(h -> h.getPret().getId().equals(pret.getId()))
+                .collect(Collectors.toList());
     }
 }

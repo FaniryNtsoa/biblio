@@ -7,6 +7,7 @@ import com.library.repository.HistoriquePretRepository;
 import com.library.repository.StatusPretRepository;
 import com.library.service.PretValidationService;
 import com.library.service.GestionAdherentService;
+import com.library.service.PenaliteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class PretValidationServiceImpl implements PretValidationService {
     private final HistoriquePretRepository historiquePretRepository;
     private final StatusPretRepository statusPretRepository;
     private final GestionAdherentService gestionAdherentService;
+    private final PenaliteService penaliteService;
     
     private String validationMessage;
 
@@ -31,12 +33,14 @@ public class PretValidationServiceImpl implements PretValidationService {
                                    PretRepository pretRepository,
                                    HistoriquePretRepository historiquePretRepository,
                                    StatusPretRepository statusPretRepository,
-                                   GestionAdherentService gestionAdherentService) {
+                                   GestionAdherentService gestionAdherentService,
+                                   PenaliteService penaliteService) {
         this.gestionAdherentRepository = gestionAdherentRepository;
         this.pretRepository = pretRepository;
         this.historiquePretRepository = historiquePretRepository;
         this.statusPretRepository = statusPretRepository;
         this.gestionAdherentService = gestionAdherentService;
+        this.penaliteService = penaliteService;
     }
 
     @Override
@@ -129,6 +133,33 @@ public class PretValidationServiceImpl implements PretValidationService {
     @Override
     public String getValidationMessage() {
         return validationMessage;
+    }
+
+    @Override
+    public boolean validateNoPenalites(Adherent adherent) {
+        if (penaliteService.hasActivePenalites(adherent)) {
+            LocalDate dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
+            validationMessage = "Vous avez une pénalité en cours jusqu'au " + 
+                               dateFinPenalite.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                               ". Veuillez attendre la fin de cette période pour emprunter à nouveau.";
+            // Retourne false pour bloquer l'emprunt
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean validateNoPenalitesOnDate(Adherent adherent, LocalDate datePret) {
+        if (penaliteService.isPenalityActiveOnDate(adherent, datePret)) {
+            LocalDate dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
+            validationMessage = "Vous avez une pénalité active à la date demandée (" + 
+                               datePret.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                               "). Veuillez choisir une date après le " + 
+                               dateFinPenalite.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) + 
+                               " ou contacter un administrateur.";
+            return false;
+        }
+        return true;
     }
 }
 

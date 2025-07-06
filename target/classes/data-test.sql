@@ -251,78 +251,25 @@ INSERT INTO historique_prolongement (status_prolongement_id, prolongement_id) VA
 (2, 1), -- Prolongement de Marie accepté
 (1, 2); -- Prolongement de Jean en attente
 
--- Quelques pénalités pour tester
-INSERT INTO penalite (pret_id, description, date_penalite) VALUES
-(6, 'Retard de restitution - 1 jour', '2023-12-23'),
-(6, 'Retard de restitution - 5 jours', '2023-12-27');
+-- Modifier les pénalités pour inclure les nouveaux champs
+DELETE FROM penalite;
 
--- Données supplémentaires pour tester les validations
+-- Quelques pénalités pour tester avec les nouveaux champs
+INSERT INTO penalite (pret_id, description, date_penalite, nb_jours_retard, date_fin_penalite, date_debut_penalite, active, duree_jours, date_creation) VALUES
+(6, 'Retard de restitution - 5 jours', '2023-12-27', 5, '2024-01-01', '2023-12-27', false, 5, '2023-12-27'),
+(6, 'Retard de restitution - 10 jours', '2024-01-05', 10, '2024-01-15', '2024-01-05', false, 10, '2024-01-05');
 
--- Adhérent avec plusieurs prêts pour tester la limite
-INSERT INTO adherent (type_adherent_id, nom, prenom, adresse, mot_de_passe, dtn) VALUES
-(3, 'Test', 'Limite', '888 Rue des Tests', 'test123', '1990-01-01'); -- Particulier
-
-INSERT INTO inscription (adherent_id, date_inscription, date_expiration) VALUES
-(7, '2024-01-01', '2024-12-31'); -- Inscription active
-
--- Donnons-lui déjà 2 prêts (limite pour particulier)
+-- Ajouter une pénalité active pour un adhérent
 INSERT INTO pret (adherent_id, exemplaire_id, type_pret_id, date_pret, date_retour_prevue) VALUES
-(7, 3, 1, '2024-01-20', '2024-02-03'), -- Premier prêt
-(7, 4, 1, '2024-01-22', '2024-02-05'); -- Deuxième prêt
+(5, 31, 1, '2024-01-01', '2024-01-15'); -- Prêt en retard de Lucas
 
 INSERT INTO historique_pret (status_pret_id, pret_id, exemplaire_id, date_changement, commentaire) VALUES
-(1, 8, 3, '2024-01-20', 'Premier prêt de Test Limite'),
-(1, 9, 4, '2024-01-22', 'Deuxième prêt de Test Limite - limite atteinte');
+(1, 13, 31, '2024-01-01', 'Prêt à domicile'),
+(3, 13, 31, '2024-01-16', 'Prêt en retard détecté automatiquement');
 
--- Livre avec âge minimum élevé pour tester la validation d'âge
-INSERT INTO livre (titre, auteur, edition, isbn, date_sortie, resume, langue, age_min) VALUES
-('Manuel Universitaire Avancé', 'Dr. Expert', 'Éditions Scientifiques', '9780000000000', '2020-01-01', 'Manuel pour étudiants avancés uniquement.', 'Francais', 18);
-
--- Association à une catégorie
-INSERT INTO livre_categorie (livre_id, categorie_id) VALUES
-(11, 6); -- Classique
-
--- Exemplaires pour ce livre
-INSERT INTO exemplaire (livre_id, etat_exemplaire_id) VALUES
-(11, 1), -- Excellent
-(11, 2); -- Bon
-
--- Test avec un livre sans exemplaires disponibles
-INSERT INTO livre (titre, auteur, edition, isbn, date_sortie, resume, langue, age_min) VALUES
-('Livre Épuisé', 'Auteur Rare', 'Édition Limitée', '9780000000001', '2010-01-01', 'Livre sans exemplaires disponibles.', 'Francais', 10);
-
-INSERT INTO livre_categorie (livre_id, categorie_id) VALUES
-(12, 6); -- Classique
-
--- Pas d'exemplaires pour ce livre (pour tester l'indisponibilité)
-
--- Données pour tester les consultations sur place multiples
-INSERT INTO pret (adherent_id, exemplaire_id, type_pret_id, date_pret, date_retour_prevue) VALUES
-(1, 6, 2, '2024-01-23', NULL), -- Marie consultation sur place
-(2, 7, 2, '2024-01-23', NULL), -- Pierre autre consultation
-(4, 8, 2, '2024-01-24', NULL); -- Jean consultation
-
-INSERT INTO historique_pret (status_pret_id, pret_id, exemplaire_id, date_changement, commentaire) VALUES
--- Consultations terminées immédiatement
-(1, 10, 6, '2024-01-23', 'Consultation sur place débutée'),
-(2, 10, 6, '2024-01-23', 'Consultation terminée'),
-(1, 11, 7, '2024-01-23', 'Consultation sur place débutée'),
-(2, 11, 7, '2024-01-23', 'Consultation terminée'),
-(1, 12, 8, '2024-01-24', 'Consultation sur place débutée'),
-(2, 12, 8, '2024-01-24', 'Consultation terminée');
-
--- Adhérent sans inscription (pour tester l'accès refusé)
-INSERT INTO adherent (type_adherent_id, nom, prenom, adresse, mot_de_passe, dtn) VALUES
-(3, 'Sans', 'Inscription', '000 Rue Vide', 'aucun123', '1985-05-15');
-
--- Pas d'inscription pour cet adhérent (ID 8)
-
--- Test avec inscription expirée
-INSERT INTO adherent (type_adherent_id, nom, prenom, adresse, mot_de_passe, dtn) VALUES
-(1, 'Expire', 'Etudiant', '111 Rue Passée', 'expire123', '2000-01-01');
-
-INSERT INTO inscription (adherent_id, date_inscription, date_expiration) VALUES
-(9, '2023-01-01', '2023-12-31'); -- Inscription expirée
+-- Pénalité active pour Lucas
+INSERT INTO penalite (pret_id, description, date_penalite, nb_jours_retard, date_fin_penalite, date_debut_penalite, active, duree_jours, date_creation) VALUES
+(13, 'Retard de restitution - Livre Science pour Tous', '2024-01-25', 10, '2024-02-04', '2024-01-25', true, 10, '2024-01-25');
 
 -- Quelques données supplémentaires pour enrichir les tests
 INSERT INTO livre (titre, auteur, edition, isbn, date_sortie, resume, langue, age_min) VALUES
