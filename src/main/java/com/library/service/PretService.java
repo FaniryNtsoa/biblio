@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.library.model.Adherent;
+import com.library.model.Penalite;
 import com.library.model.Pret;
 import com.library.model.TypePret;
 
@@ -20,4 +21,16 @@ public interface PretService {
     List<Pret> findByDatePretBetween(LocalDate dateDebut, LocalDate dateFin);
     long countByAdherent(Adherent adherent);
     
+    // Nouvelles méthodes pour gérer les filtres et les retours
+    List<Pret> findPretEnCoursByAdherent(Adherent adherent);
+    List<Pret> findPretRetournesByAdherent(Adherent adherent);
+    List<Pret> findPretEnRetardByAdherent(Adherent adherent);
+    List<Pret> findPretARendreBientotByAdherent(Adherent adherent, int joursRestants);
+    
+    int countPretEnCoursByAdherent(Adherent adherent);
+    int countPretEnRetardByAdherent(Adherent adherent);
+    int countPretARendreBientotByAdherent(Adherent adherent, int joursRestants);
+    
+    boolean isPretRendu(Pret pret);
+    Penalite savePenalite(Penalite penalite);
 }

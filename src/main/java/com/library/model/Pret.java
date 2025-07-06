@@ -21,8 +21,15 @@ public class Pret {
     @JoinColumn(name = "type_pret_id", nullable = false)
     private TypePret typePret;
     
+    @ManyToOne
+    @JoinColumn(name = "exemplaire_id", nullable = false)
+    private Exemplaire exemplaire;
+    
     @Column(name = "date_pret", nullable = false)
     private LocalDate datePret;
+    
+    @Column(name = "date_retour_prevue")
+    private LocalDate dateRetourPrevue;
     
     @OneToMany(mappedBy = "pret")
     private Set<Penalite> penalites = new HashSet<>();
@@ -58,12 +65,28 @@ public class Pret {
         this.typePret = typePret;
     }
 
+    public Exemplaire getExemplaire() {
+        return exemplaire;
+    }
+
+    public void setExemplaire(Exemplaire exemplaire) {
+        this.exemplaire = exemplaire;
+    }
+
     public LocalDate getDatePret() {
         return datePret;
     }
 
     public void setDatePret(LocalDate datePret) {
         this.datePret = datePret;
+    }
+
+    public LocalDate getDateRetourPrevue() {
+        return dateRetourPrevue;
+    }
+
+    public void setDateRetourPrevue(LocalDate dateRetourPrevue) {
+        this.dateRetourPrevue = dateRetourPrevue;
     }
 
     public Set<Penalite> getPenalites() {
