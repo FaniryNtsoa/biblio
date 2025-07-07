@@ -38,15 +38,47 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
-
     
     @Override
-    public boolean isAdmin(User user) {
-        return user.getTypeUser().getNom().equalsIgnoreCase("admin");
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getUsername().equals(username))
+                .findFirst();
     }
+    
     @Override
-    public boolean isBibliothecaire(User user) {
-        return user.getTypeUser().getNom().equalsIgnoreCase("bibliothecaire");
+    public boolean authenticateUser(String username, String password) {
+        return findByUsername(username)
+                .map(user -> user.getMotDePasse().equals(password) && !user.isBibliothecaire())
+                .orElse(false);
     }
+    
+    @Override
+    public boolean authenticateBibliothecaire(String username, String password) {
+        // Pour des fins de test, créons un compte bibliothécaire si aucun n'existe
+        if (userRepository.count() == 0) {
+            User admin = new User();
+            admin.setUsername("admin");
+            admin.setMotDePasse("admin");
+            admin.setRole("BIBLIOTHECAIRE");
+            userRepository.save(admin);
+        }
+        
+        return userRepository.findAll().stream()
+                .filter(user -> user.getUsername().equals(username) && 
+                               user.getMotDePasse().equals(password) &&
+                               user.getRole().equals("BIBLIOTHECAIRE"))
+                .findFirst()
+                .isPresent();
+    }
+    
+    // @Override
+    // public boolean isAdmin(User user) {
+    //     return user.getTypeUser().getNom().equalsIgnoreCase("admin");
+    // }
+    // @Override
+    // public boolean isBibliothecaire(User user) {
+    //     return user.getTypeUser().getNom().equalsIgnoreCase("bibliothecaire");
+    // }
 }
 

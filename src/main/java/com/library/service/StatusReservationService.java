@@ -9,4 +9,5 @@ public interface StatusReservationService {
     Optional<StatusReservation> getStatusReservationById(Long id);
     StatusReservation saveStatusReservation(StatusReservation statusReservation);
     void deleteStatusReservation(Long id);
+    Optional<StatusReservation> findByNom(String nom);
 }

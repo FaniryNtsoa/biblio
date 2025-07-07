@@ -28,5 +28,5 @@ public interface PenaliteService {
     void updatePenaliteStatuses();
     
     // Nouvelle méthode pour vérifier si une date tombe pendant une période de pénalité
-    boolean isPenalityActiveOnDate(Adherent adherent, LocalDate date);
+    boolean isDateInPenalitePeriod(Adherent adherent, LocalDate date);
 }

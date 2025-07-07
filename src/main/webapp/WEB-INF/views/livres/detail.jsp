@@ -18,88 +18,139 @@
         
         <main class="content">
             <header class="content-header">
-                <div class="back-button">
-                    <a href="<c:url value='/livres'/>" class="btn btn-icon">
-                        <i class="fas fa-arrow-left"></i> Retour au catalogue
-                    </a>
+                <a href="<c:url value='/livres'/>" class="btn btn-icon back-button">
+                    <i class="fas fa-arrow-left"></i> Retour au catalogue
+                </a>
+                <div class="header-actions">
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                    </div>
                 </div>
             </header>
             
-            <div class="livre-detail-container">
-                <div class="livre-detail-header">
-                    <div class="livre-detail-cover">
-                        <div class="livre-cover-placeholder large">
+            <c:if test="${not empty livre}">
+                <div class="livre-detail-container">
+                    <div class="livre-detail-header">
+                        <div class="livre-detail-cover livre-cover-placeholder large">
                             <i class="fas fa-book"></i>
                         </div>
-                    </div>
-                    <div class="livre-detail-info">
-                        <h1>${livre.titre}</h1>
-                        <h2>par ${livre.auteur}</h2>
                         
-                        <div class="livre-detail-meta">
-                            <span class="meta-item">
-                                <i class="fas fa-calendar-alt"></i> Année: ${livre.dateSortie.year}
-                            </span>
-                            <span class="meta-item">
-                                <i class="fas fa-globe"></i> Langue: ${livre.langue}
-                            </span>
-                            <span class="meta-item">
-                                <i class="fas fa-child"></i> Âge minimum: ${livre.ageMin} ans
-                            </span>
-                            <span class="meta-item">
-                                <i class="fas fa-building"></i> Édition: ${livre.edition}
-                            </span>
-                            <c:if test="${not empty livre.isbn}">
-                                <span class="meta-item">
-                                    <i class="fas fa-barcode"></i> ISBN: ${livre.isbn}
-                                </span>
-                            </c:if>
-                        </div>
-                        
-                        <div class="livre-detail-categories">
-                            <h3>Catégories:</h3>
-                            <div class="category-tags">
-                                <c:forEach items="${livre.categories}" var="categorie">
-                                    <span class="category-tag">${categorie.nom}</span>
-                                </c:forEach>
+                        <div class="livre-detail-info">
+                            <h1>${livre.titre}</h1>
+                            <h2>par ${livre.auteur}</h2>
+                            
+                            <div class="livre-detail-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <fmt:parseDate value="${livre.dateSortie}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+                                    <fmt:formatDate value="${parsedDate}" type="date" pattern="yyyy" />
+                                </div>
+                                
+                                <div class="meta-item">
+                                    <i class="fas fa-bookmark"></i>
+                                    ${livre.edition}
+                                </div>
+                                
+                                <div class="meta-item">
+                                    <i class="fas fa-language"></i>
+                                    ${livre.langue}
+                                </div>
+                                
+                                <c:if test="${not empty livre.isbn}">
+                                    <div class="meta-item">
+                                        <i class="fas fa-barcode"></i>
+                                        ISBN: ${livre.isbn}
+                                    </div>
+                                </c:if>
+                                
+                                <div class="meta-item">
+                                    <i class="fas fa-child"></i>
+                                    ${livre.ageMin}+ ans
+                                </div>
+                            </div>
+                            
+                            <div class="livre-detail-categories">
+                                <h3>Catégories</h3>
+                                <div class="category-tags">
+                                    <c:forEach var="categorie" items="${livre.categories}">
+                                        <span class="category-tag">${categorie.nom}</span>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                            
+                            <div class="livre-detail-availability">
+                                <h3>Disponibilité</h3>
+                                <c:choose>
+                                    <c:when test="${isAvailable}">
+                                        <div class="availability-status available">
+                                            <i class="fas fa-check-circle"></i> Disponible
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="availability-status unavailable">
+                                            <i class="fas fa-times-circle"></i> Indisponible
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            
+                            <div class="livre-detail-actions">
+                                <c:if test="${isActiveMember and isAvailable}">
+                                    <a href="<c:url value='/prets/nouveau?livreId=${livre.id}'/>" class="btn btn-primary">
+                                        <i class="fas fa-book-open"></i> Emprunter maintenant
+                                    </a>
+                                </c:if>
+                                <c:if test="${isActiveMember}">
+                                    <a href="<c:url value='/reservations/nouveau?livreId=${livre.id}'/>" class="btn btn-secondary">
+                                        <i class="fas fa-calendar-alt"></i> Réserver
+                                    </a>
+                                </c:if>
+                                <c:if test="${not isActiveMember}">
+                                    <a href="<c:url value='/inscription'/>" class="btn btn-secondary" onclick="return confirmMembership()">
+                                        <i class="fas fa-lock"></i> Devenir membre pour emprunter
+                                    </a>
+                                </c:if>
                             </div>
                         </div>
-                        
+                    </div>
+                    
+                    <div class="livre-detail-resume">
+                        <h3>Résumé</h3>
+                        <div class="livre-resume-content">
+                            <c:choose>
+                                <c:when test="${not empty livre.resume}">
+                                    ${livre.resume}
+                                </c:when>
+                                <c:otherwise>
+                                    <p class="no-resume">Aucun résumé disponible pour ce livre.</p>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="livre-detail-resume">
-                    <h3>Résumé</h3>
-                    <div class="livre-resume-content">
-                        <c:choose>
-                            <c:when test="${not empty livre.resume}">
-                                <p>${livre.resume}</p>
-                            </c:when>
-                            <c:otherwise>
-                                <p class="no-resume">Aucun résumé disponible pour ce livre.</p>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-                </div>
-            </div>
+            </c:if>
         </main>
     </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Animation d'entrée pour les éléments de la page de détail
-            const elements = [
-                document.querySelector('.livre-detail-cover'),
-                document.querySelector('.livre-detail-info'),
-                document.querySelector('.livre-detail-resume')
-            ];
+            // Animation des éléments
+            setTimeout(() => {
+                document.querySelector('.livre-detail-cover').classList.add('fade-in');
+            }, 100);
             
-            elements.forEach((element, index) => {
-                setTimeout(() => {
-                    element.classList.add('fade-in');
-                }, 200 * index);
-            });
+            setTimeout(() => {
+                document.querySelector('.livre-detail-info').classList.add('fade-in');
+            }, 300);
+            
+            setTimeout(() => {
+                document.querySelector('.livre-detail-resume').classList.add('fade-in');
+            }, 500);
         });
+        
+        function confirmMembership() {
+            return confirm('Vous devez être membre pour emprunter ou réserver des livres. Souhaitez-vous devenir membre maintenant ?');
+        }
     </script>
 </body>
 </html>

@@ -217,4 +217,21 @@ public class PenaliteServiceImpl implements PenaliteService {
                 .filter(p -> p.getActive())
                 .anyMatch(p -> !date.isBefore(p.getDateDebutPenalite()) && !date.isAfter(p.getDateFinPenalite()));
     }
+
+    @Override
+    public boolean isDateInPenalitePeriod(Adherent adherent, LocalDate date) {
+        // Récupérer toutes les pénalités actives
+        List<Penalite> penalitesActives = findActiveByAdherent(adherent);
+        
+        // Vérifier si la date tombe dans une période de pénalité
+        for (Penalite penalite : penalitesActives) {
+            // Si la date est entre le début et la fin de la pénalité
+            if ((penalite.getDateDebutPenalite().isEqual(date) || penalite.getDateDebutPenalite().isBefore(date)) &&
+                (penalite.getDateFinPenalite().isEqual(date) || penalite.getDateFinPenalite().isAfter(date))) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }
