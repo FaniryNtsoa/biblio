@@ -45,11 +45,11 @@
         <li class="${currentPage == 'reservations' ? 'active' : ''}">
             <c:choose>
                 <c:when test="${isActiveMember}">
-                    <a href="<c:url value='/reservations'/>"><i class="fas fa-clock"></i> Mes réservations</a>
+                    <a href="<c:url value='/reservations'/>"><i class="fas fa-calendar-alt"></i> Mes réservations</a>
                 </c:when>
                 <c:otherwise>
                     <a href="<c:url value='/inscription'/>" onclick="showMembershipAlert(event)">
-                        <i class="fas fa-clock"></i> Mes réservations
+                        <i class="fas fa-calendar-alt"></i> Mes réservations
                         <span class="menu-alert"><i class="fas fa-lock"></i></span>
                     </a>
                 </c:otherwise>

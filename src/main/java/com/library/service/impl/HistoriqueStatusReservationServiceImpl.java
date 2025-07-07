@@ -63,6 +63,7 @@ public class HistoriqueStatusReservationServiceImpl implements HistoriqueStatusR
         historique.setReservation(reservation);
         historique.setStatusReservation(statusReservation);
         historique.setDateReservation(LocalDate.now());
+        historique.setDateChangement(LocalDate.now()); // Ajout de la date de changement
         
         return historiqueStatusReservationRepository.save(historique);
     }

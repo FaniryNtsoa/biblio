@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - Bibliothèque</title>
+    <title>Connexion Bibliothécaire - Bibliothèque</title>
     <link rel="stylesheet" href="<c:url value='/css/style.css'/>">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -14,8 +14,8 @@
     <div class="auth-container">
         <div class="auth-wrapper">
             <div class="auth-header">
-                <h1><i class="fas fa-book-open"></i> Bibliothèque</h1>
-                <p>Connectez-vous pour accéder à votre compte</p>
+                <h1><i class="fas fa-user-tie"></i> Espace Bibliothécaire</h1>
+                <p>Connectez-vous pour gérer les réservations et les prêts</p>
             </div>
             
             <c:if test="${not empty error}">
@@ -24,27 +24,21 @@
                 </div>
             </c:if>
             
-            <c:if test="${not empty success}">
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i> ${success}
-                </div>
-            </c:if>
-            
             <div class="auth-form">
-                <form action="<c:url value='/login'/>" method="post">
+                <form action="<c:url value='/bibliothecaire/login'/>" method="post">
                     <div class="form-group">
-                        <label for="nom">Nom d'utilisateur</label>
+                        <label for="username">Identifiant</label>
                         <div class="input-icon">
                             <i class="fas fa-user"></i>
-                            <input type="text" id="nom" name="nom" required placeholder="Votre nom d'utilisateur">
+                            <input type="text" id="username" name="username" required placeholder="Votre identifiant">
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="motDePasse">Mot de passe</label>
+                        <label for="password">Mot de passe</label>
                         <div class="input-icon">
                             <i class="fas fa-lock"></i>
-                            <input type="password" id="motDePasse" name="motDePasse" required placeholder="Votre mot de passe">
+                            <input type="password" id="password" name="password" required placeholder="Votre mot de passe">
                         </div>
                     </div>
                     
@@ -56,37 +50,38 @@
                 </form>
                 
                 <div class="auth-footer">
-                    <p>Vous n'avez pas de compte ? <a href="<c:url value='/register'/>">S'inscrire</a></p>
-                    <hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;" />
-                    <p>
-                        <a href="<c:url value='/bibliothecaire/login'/>" class="bibliothecaire-link">
-                            <i class="fas fa-user-tie"></i> Connexion bibliothécaire
-                        </a>
-                    </p>
+                    <a href="<c:url value='/login'/>" class="back-link">
+                        <i class="fas fa-arrow-left"></i> Retour à l'espace adhérent
+                    </a>
                 </div>
             </div>
         </div>
     </div>
     
     <style>
-        .bibliothecaire-link {
+        .back-link {
             display: inline-flex;
             align-items: center;
-            padding: 8px 12px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-            color: #555;
-            transition: all 0.3s;
+            color: #3949ab;
             font-size: 14px;
+            transition: all 0.3s;
         }
         
-        .bibliothecaire-link i {
+        .back-link i {
             margin-right: 8px;
         }
         
-        .bibliothecaire-link:hover {
-            background-color: #e0e0e0;
-            color: #333;
+        .back-link:hover {
+            color: #1a237e;
+            text-decoration: underline;
+        }
+        
+        .auth-wrapper {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .auth-header h1 {
+            color: #1a237e;
         }
     </style>
 </body>

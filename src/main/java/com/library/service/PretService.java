@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.library.model.Adherent;
 import com.library.model.Penalite;
 import com.library.model.Pret;
+import com.library.model.Reservation;
 import com.library.model.TypePret;
 
 public interface PretService {
@@ -33,4 +34,7 @@ public interface PretService {
     
     boolean isPretRendu(Pret pret);
     Penalite savePenalite(Penalite penalite);
+    
+    // Nouvelle méthode pour créer un prêt à partir d'une réservation acceptée
+    Pret createPretFromReservation(Reservation reservation);
 }
