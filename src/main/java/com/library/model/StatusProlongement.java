@@ -13,7 +13,7 @@ public class StatusProlongement {
     private Long id;
     
     @Column(nullable = false)
-    private Integer nom;
+    private String nom;
     
     @OneToMany(mappedBy = "statusProlongement")
     private Set<HistoriqueProlongement> historiqueProlongements = new HashSet<>();
@@ -27,13 +27,6 @@ public class StatusProlongement {
         this.id = id;
     }
 
-    public Integer getNom() {
-        return nom;
-    }
-
-    public void setNom(Integer nom) {
-        this.nom = nom;
-    }
 
     public Set<HistoriqueProlongement> getHistoriqueProlongements() {
         return historiqueProlongements;
@@ -41,5 +34,13 @@ public class StatusProlongement {
 
     public void setHistoriqueProlongements(Set<HistoriqueProlongement> historiqueProlongements) {
         this.historiqueProlongements = historiqueProlongements;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 }
