@@ -1,7 +1,7 @@
 package com.library.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "penalite")
@@ -16,7 +16,7 @@ public class Penalite {
     private Pret pret;
     
     @Column(name = "date_penalite", nullable = false)
-    private LocalDate datePenalite;
+    private LocalDateTime datePenalite;
     
     @Column(length = 50)  // Modifier la longueur pour correspondre à la base de données
     private String description;
@@ -25,10 +25,10 @@ public class Penalite {
     private Integer nbJoursRetard;
     
     @Column(name = "date_fin_penalite", nullable = false)
-    private LocalDate dateFinPenalite;
+    private LocalDateTime dateFinPenalite;
     
     @Column(name = "date_debut_penalite", nullable = false)
-    private LocalDate dateDebutPenalite;
+    private LocalDateTime dateDebutPenalite;
     
     @Column(name = "active", nullable = false)
     private Boolean active = true;
@@ -37,7 +37,7 @@ public class Penalite {
     private Integer dureeJours;
     
     @Column(name = "date_creation", nullable = false)
-    private LocalDate dateCreation = LocalDate.now(); // Valeur par défaut
+    private LocalDateTime dateCreation = LocalDateTime.now(); // Valeur par défaut
 
     // Getters and Setters
     public Long getId() {
@@ -56,11 +56,11 @@ public class Penalite {
         this.pret = pret;
     }
 
-    public LocalDate getDatePenalite() {
+    public LocalDateTime getDatePenalite() {
         return datePenalite;
     }
 
-    public void setDatePenalite(LocalDate datePenalite) {
+    public void setDatePenalite(LocalDateTime datePenalite) {
         this.datePenalite = datePenalite;
     }
 
@@ -80,19 +80,19 @@ public class Penalite {
         this.nbJoursRetard = nbJoursRetard;
     }
 
-    public LocalDate getDateFinPenalite() {
+    public LocalDateTime getDateFinPenalite() {
         return dateFinPenalite;
     }
 
-    public void setDateFinPenalite(LocalDate dateFinPenalite) {
+    public void setDateFinPenalite(LocalDateTime dateFinPenalite) {
         this.dateFinPenalite = dateFinPenalite;
     }
 
-    public LocalDate getDateDebutPenalite() {
+    public LocalDateTime getDateDebutPenalite() {
         return dateDebutPenalite;
     }
 
-    public void setDateDebutPenalite(LocalDate dateDebutPenalite) {
+    public void setDateDebutPenalite(LocalDateTime dateDebutPenalite) {
         this.dateDebutPenalite = dateDebutPenalite;
     }
 
@@ -112,11 +112,11 @@ public class Penalite {
         this.dureeJours = dureeJours;
     }
 
-    public LocalDate getDateCreation() {
+    public LocalDateTime getDateCreation() {
         return dateCreation;
     }
 
-    public void setDateCreation(LocalDate dateCreation) {
+    public void setDateCreation(LocalDateTime dateCreation) {
         this.dateCreation = dateCreation;
     }
 }

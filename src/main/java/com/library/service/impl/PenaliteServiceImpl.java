@@ -9,7 +9,7 @@ import com.library.service.PenaliteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
@@ -56,7 +56,7 @@ public class PenaliteServiceImpl implements PenaliteService {
     }
 
     @Override
-    public List<Penalite> findByDateBetween(LocalDate dateDebut, LocalDate dateFin) {
+    public List<Penalite> findByDateBetween(LocalDateTime dateDebut, LocalDateTime dateFin) {
         return penaliteRepository.findAll().stream()
                 .filter(penalite -> !penalite.getDatePenalite().isBefore(dateDebut) && 
                                    !penalite.getDatePenalite().isAfter(dateFin))
@@ -72,20 +72,20 @@ public class PenaliteServiceImpl implements PenaliteService {
         Penalite penalite = new Penalite();
         penalite.setPret(pret);
         penalite.setDescription(motif);
-        penalite.setDatePenalite(LocalDate.now());
+        penalite.setDatePenalite(LocalDateTime.now());
         penalite.setNbJoursRetard(0); // Par défaut
         penalite.setDureeJours(0);    // Par défaut
-        penalite.setDateFinPenalite(LocalDate.now()); // Par défaut
-        penalite.setDateDebutPenalite(LocalDate.now()); // Définir la date de début
+        penalite.setDateFinPenalite(LocalDateTime.now()); // Par défaut
+        penalite.setDateDebutPenalite(LocalDateTime.now()); // Définir la date de début
         penalite.setActive(false);    // Par défaut
-        penalite.setDateCreation(LocalDate.now());
+        penalite.setDateCreation(LocalDateTime.now());
         
         return penaliteRepository.save(penalite);
     }
     
     @Override
     @Transactional
-    public Penalite createPenaliteForRetard(Pret pret, LocalDate dateRetour) {
+    public Penalite createPenaliteForRetard(Pret pret, LocalDateTime dateRetour) {
         int joursRetard = calculerJoursRetard(pret, dateRetour);
         
         if (joursRetard <= 0) {
@@ -106,11 +106,11 @@ public class PenaliteServiceImpl implements PenaliteService {
         
         penalite.setNbJoursRetard(joursRetard);
         penalite.setDureeJours(joursRetard);
-        penalite.setDateCreation(LocalDate.now());
+        penalite.setDateCreation(LocalDateTime.now());
         
         // Déterminer la date de début de pénalité
-        LocalDate dateDebut = dateRetour; // Par défaut, commence à la date de retour
-        LocalDate dateFinPenaliteExistante = getDateFinPenalite(pret.getAdherent());
+        LocalDateTime dateDebut = dateRetour; // Par défaut, commence à la date de retour
+        LocalDateTime dateFinPenaliteExistante = getDateFinPenalite(pret.getAdherent());
         
         if (dateFinPenaliteExistante != null && dateFinPenaliteExistante.isAfter(dateRetour)) {
             // Si une pénalité est déjà en cours, la nouvelle commence après
@@ -120,7 +120,7 @@ public class PenaliteServiceImpl implements PenaliteService {
         penalite.setDateDebutPenalite(dateDebut);
         
         // Calculer la date de fin en ajoutant les jours de retard à la date de début
-        LocalDate dateFin = dateDebut.plusDays(joursRetard);
+        LocalDateTime dateFin = dateDebut.plusDays(joursRetard);
         penalite.setDateFinPenalite(dateFin);
         penalite.setActive(true);
         
@@ -128,7 +128,7 @@ public class PenaliteServiceImpl implements PenaliteService {
     }
 
     @Override
-    public int calculerJoursRetard(Pret pret, LocalDate dateRetour) {
+    public int calculerJoursRetard(Pret pret, LocalDateTime dateRetour) {
         if (pret.getDateRetourPrevue() == null || dateRetour == null) {
             return 0;
         }
@@ -141,7 +141,7 @@ public class PenaliteServiceImpl implements PenaliteService {
     public boolean hasActivePenalites(Adherent adherent) {
         updatePenaliteStatuses(); // Mettre à jour les statuts des pénalités d'abord
         
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
         return penaliteRepository.findAll().stream()
                 .filter(p -> p.getPret().getAdherent().getId().equals(adherent.getId()))
                 .filter(p -> p.getActive())
@@ -151,16 +151,16 @@ public class PenaliteServiceImpl implements PenaliteService {
     }
 
     @Override
-    public LocalDate getDateFinPenalite(Adherent adherent) {
+    public LocalDateTime getDateFinPenalite(Adherent adherent) {
         updatePenaliteStatuses(); // Mettre à jour les statuts des pénalités d'abord
         
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
         return penaliteRepository.findAll().stream()
                 .filter(p -> p.getPret().getAdherent().getId().equals(adherent.getId()))
                 .filter(p -> p.getActive())
                 .filter(p -> !p.getDateFinPenalite().isBefore(today))
                 .map(Penalite::getDateFinPenalite)
-                .max(LocalDate::compareTo)
+                .max(LocalDateTime::compareTo)
                 .orElse(null);
     }
 
@@ -176,7 +176,7 @@ public class PenaliteServiceImpl implements PenaliteService {
     public List<Penalite> findActiveByAdherent(Adherent adherent) {
         updatePenaliteStatuses(); // Mettre à jour les statuts des pénalités d'abord
         
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
         return penaliteRepository.findAll().stream()
                 .filter(p -> p.getPret().getAdherent().getId().equals(adherent.getId()))
                 .filter(p -> p.getActive())
@@ -196,7 +196,7 @@ public class PenaliteServiceImpl implements PenaliteService {
     @Override
     @Transactional
     public void updatePenaliteStatuses() {
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
         List<Penalite> penalites = penaliteRepository.findAll().stream()
                 .filter(p -> p.getActive())
                 .filter(p -> p.getDateFinPenalite().isBefore(today))
@@ -209,7 +209,7 @@ public class PenaliteServiceImpl implements PenaliteService {
     }
 
     @Override
-    public boolean isPenalityActiveOnDate(Adherent adherent, LocalDate date) {
+    public boolean isPenalityActiveOnDate(Adherent adherent, LocalDateTime date) {
         updatePenaliteStatuses(); // Mettre à jour les statuts des pénalités d'abord
         
         return penaliteRepository.findAll().stream()
@@ -219,7 +219,7 @@ public class PenaliteServiceImpl implements PenaliteService {
     }
 
     @Override
-    public boolean isDateInPenalitePeriod(Adherent adherent, LocalDate date) {
+    public boolean isDateInPenalitePeriod(Adherent adherent, LocalDateTime date) {
         // Récupérer toutes les pénalités actives
         List<Penalite> penalitesActives = findActiveByAdherent(adherent);
         

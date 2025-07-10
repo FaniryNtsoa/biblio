@@ -18,7 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -123,7 +123,7 @@ public class BibliothecaireController {
             
             // Vérifier si l'adhérent a des pénalités actives
             if (penaliteService.hasActivePenalites(reservation.getAdherent())) {
-                LocalDate dateFinPenalite = penaliteService.getDateFinPenalite(reservation.getAdherent());
+                LocalDateTime dateFinPenalite = penaliteService.getDateFinPenalite(reservation.getAdherent());
                 
                 // Si la date de réservation est avant la fin de la pénalité, rejeter automatiquement
                 if (reservation.getDateReservation().isBefore(dateFinPenalite)) {

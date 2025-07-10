@@ -1,7 +1,7 @@
 package com.library.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,10 +26,10 @@ public class Pret {
     private Exemplaire exemplaire;
     
     @Column(name = "date_pret", nullable = false)
-    private LocalDate datePret;
+    private LocalDateTime datePret;
     
     @Column(name = "date_retour_prevue")
-    private LocalDate dateRetourPrevue;
+    private LocalDateTime dateRetourPrevue;
     
     @OneToMany(mappedBy = "pret")
     private Set<Penalite> penalites = new HashSet<>();
@@ -73,19 +73,19 @@ public class Pret {
         this.exemplaire = exemplaire;
     }
 
-    public LocalDate getDatePret() {
+    public LocalDateTime getDatePret() {
         return datePret;
     }
 
-    public void setDatePret(LocalDate datePret) {
+    public void setDatePret(LocalDateTime datePret) {
         this.datePret = datePret;
     }
 
-    public LocalDate getDateRetourPrevue() {
+    public LocalDateTime getDateRetourPrevue() {
         return dateRetourPrevue;
     }
 
-    public void setDateRetourPrevue(LocalDate dateRetourPrevue) {
+    public void setDateRetourPrevue(LocalDateTime dateRetourPrevue) {
         this.dateRetourPrevue = dateRetourPrevue;
     }
 

@@ -9,5 +9,5 @@ public interface HistoriqueStatusReservationService {
     Optional<HistoriqueStatusReservation> getHistoriqueStatusReservationById(Long id);
     HistoriqueStatusReservation saveHistoriqueStatusReservation(HistoriqueStatusReservation historiqueStatusReservation);
     void deleteHistoriqueStatusReservation(Long id);
-    HistoriqueStatusReservation createHistoriqueStatusReservation(Long reservationId, Long statusReservationId);
+    HistoriqueStatusReservation createHistoriqueStatusReservation(Long reservationId, Long statusReservationId, String dateDeResrvation);
 }

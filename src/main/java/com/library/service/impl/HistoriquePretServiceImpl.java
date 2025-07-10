@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,7 +54,7 @@ public class HistoriquePretServiceImpl implements HistoriquePretService {
 
     @Override
     @Transactional
-    public HistoriquePret createHistoriquePret(Long pretId, Long statusPretId, LocalDate dateRetour) {
+    public HistoriquePret createHistoriquePret(Long pretId, Long statusPretId, LocalDateTime dateRetour) {
         Pret pret = pretRepository.findById(pretId)
                 .orElseThrow(() -> new RuntimeException("Prêt not found with id: " + pretId));
         
@@ -65,7 +66,7 @@ public class HistoriquePretServiceImpl implements HistoriquePretService {
         historique.setStatusPret(statusPret);
         historique.setExemplaire(pret.getExemplaire());
         historique.setDateRetour(dateRetour);
-        historique.setDateChangement(LocalDate.now());
+        historique.setDateChangement(LocalDateTime.now());
         historique.setCommentaire("Changement de statut vers: " + statusPret.getNom());
         
         return historiquePretRepository.save(historique);

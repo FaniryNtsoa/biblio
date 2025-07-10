@@ -1,7 +1,7 @@
 package com.library.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "historique_pret")
@@ -24,10 +24,10 @@ public class HistoriquePret {
     private Exemplaire exemplaire;
     
     @Column(name = "date_retour")
-    private LocalDate dateRetour;
+    private LocalDateTime dateRetour;
     
     @Column(name = "date_changement", nullable = false)
-    private LocalDate dateChangement;
+    private LocalDateTime dateChangement;
     
     @Column(name = "commentaire")
     private String commentaire;
@@ -65,19 +65,19 @@ public class HistoriquePret {
         this.exemplaire = exemplaire;
     }
 
-    public LocalDate getDateRetour() {
+    public LocalDateTime getDateRetour() {
         return dateRetour;
     }
 
-    public void setDateRetour(LocalDate dateRetour) {
+    public void setDateRetour(LocalDateTime dateRetour) {
         this.dateRetour = dateRetour;
     }
 
-    public LocalDate getDateChangement() {
+    public LocalDateTime getDateChangement() {
         return dateChangement;
     }
 
-    public void setDateChangement(LocalDate dateChangement) {
+    public void setDateChangement(LocalDateTime dateChangement) {
         this.dateChangement = dateChangement;
     }
 

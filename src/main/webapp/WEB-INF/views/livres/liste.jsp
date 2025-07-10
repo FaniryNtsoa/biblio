@@ -182,11 +182,11 @@
                                             </button>
                                         </c:if>
                                         <!-- Bouton de réservation -->
-                                        <c:if test="${isActiveMember}">
+                                        <%-- <c:if test="${isActiveMember}">
                                             <a href="<c:url value='/reservations/nouveau?livreId=${livre.id}'/>" class="btn btn-sm btn-secondary" style="flex: 1; text-align: center;">
                                                 <i class="fas fa-calendar-alt"></i> Réserver
                                             </a>
-                                        </c:if>
+                                        </c:if> --%>
                                     </div>
                                 </div>
                             </c:forEach>

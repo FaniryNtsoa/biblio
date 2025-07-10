@@ -1,7 +1,7 @@
 package com.library.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "inscription")
@@ -16,10 +16,10 @@ public class Inscription {
     private Adherent adherent;
     
     @Column(name = "date_inscription", nullable = false)
-    private LocalDate dateInscription;
+    private LocalDateTime dateInscription;
     
     @Column(name = "date_expiration", nullable = false)
-    private LocalDate dateExpiration;
+    private LocalDateTime dateExpiration;
 
     // Getters and Setters
     public Long getId() {
@@ -38,19 +38,19 @@ public class Inscription {
         this.adherent = adherent;
     }
 
-    public LocalDate getDateInscription() {
+    public LocalDateTime getDateInscription() {
         return dateInscription;
     }
 
-    public void setDateInscription(LocalDate dateInscription) {
+    public void setDateInscription(LocalDateTime dateInscription) {
         this.dateInscription = dateInscription;
     }
 
-    public LocalDate getDateExpiration() {
+    public LocalDateTime getDateExpiration() {
         return dateExpiration;
     }
 
-    public void setDateExpiration(LocalDate dateExpiration) {
+    public void setDateExpiration(LocalDateTime dateExpiration) {
         this.dateExpiration = dateExpiration;
     }
 }

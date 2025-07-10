@@ -1,7 +1,9 @@
 package com.library.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "historique_status_reservation")
@@ -19,11 +21,11 @@ public class HistoriqueStatusReservation {
     @JoinColumn(name = "reservation_id", nullable = false)
     private Reservation reservation;
     
-    @Column(name = "date_reservation", nullable = false)
-    private LocalDate dateReservation;
-    
     @Column(name = "date_changement", nullable = false)
-    private LocalDate dateChangement;
+    private LocalDateTime dateChangement;
+
+    @Column(name = "date_reservation", nullable = false)
+    private LocalDateTime dateReservation;
 
     // Getters and Setters
     public Long getId() {
@@ -32,6 +34,14 @@ public class HistoriqueStatusReservation {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDateTime getDateReservation() {
+        return dateReservation;
+    }
+
+    public void setDateReservation(LocalDateTime dateReservation) {
+        this.dateReservation = dateReservation;
     }
 
     public StatusReservation getStatusReservation() {
@@ -50,19 +60,11 @@ public class HistoriqueStatusReservation {
         this.reservation = reservation;
     }
 
-    public LocalDate getDateReservation() {
-        return dateReservation;
-    }
-
-    public void setDateReservation(LocalDate dateReservation) {
-        this.dateReservation = dateReservation;
-    }
-    
-    public LocalDate getDateChangement() {
+    public LocalDateTime getDateChangement() {
         return dateChangement;
     }
-    
-    public void setDateChangement(LocalDate dateChangement) {
+
+    public void setDateChangement(LocalDateTime dateChangement) {
         this.dateChangement = dateChangement;
     }
 }
