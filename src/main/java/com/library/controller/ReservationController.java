@@ -70,6 +70,9 @@ public class ReservationController {
         model.addAttribute("reservations", reservations);
         model.addAttribute("today", LocalDateTime.now());
         
+        // Ajouter le service de réservation au modèle pour pouvoir l'utiliser dans la JSP
+        model.addAttribute("reservationService", reservationService);
+        
         // Grouper les réservations par statut pour l'affichage
         List<Reservation> reservationsEnAttente = reservationService.findReservationsByAdherentAndStatus(adherent, "EN_ATTENTE");
         List<Reservation> reservationsConfirmees = reservationService.findReservationsByAdherentAndStatus(adherent, "CONFIRMEE");

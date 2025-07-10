@@ -72,7 +72,14 @@
                                                     </c:forEach>
                                                 </td>
                                                 <td class="actions">
-                                                    <c:if test="${reservationService.isReservationEnAttente(reservation)}">
+                                                    <c:set var="isEnAttente" value="false" />
+                                                    <c:forEach var="historique" items="${reservation.historiqueStatusReservations}" varStatus="loop">
+                                                        <c:if test="${loop.last && historique.statusReservation.nom == 'EN_ATTENTE'}">
+                                                            <c:set var="isEnAttente" value="true" />
+                                                        </c:if>
+                                                    </c:forEach>
+                                                    
+                                                    <c:if test="${isEnAttente}">
                                                         <form action="<c:url value='/reservations/${reservation.id}/annuler'/>" method="post" style="display:inline;">
                                                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')">
                                                                 <i class="fas fa-times"></i> Annuler

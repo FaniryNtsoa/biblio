@@ -218,7 +218,7 @@ public class ReservationServiceImpl implements ReservationService {
     public String getLatestStatusName(Reservation reservation) {
         return historiqueStatusReservationRepository.findAll().stream()
                 .filter(historique -> historique.getReservation().getId().equals(reservation.getId()))
-                .max(Comparator.comparing(HistoriqueStatusReservation::getDateReservation))
+                .max(Comparator.comparing(HistoriqueStatusReservation::getDateChangement))
                 .map(historique -> historique.getStatusReservation().getNom())
                 .orElse(null);
     }
