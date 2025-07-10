@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public class InscriptionServiceImpl implements InscriptionService {
 
     @Override
     @Transactional
-    public Inscription renewInscription(Long inscriptionId, LocalDate newExpirationDate) {
+    public Inscription renewInscription(Long inscriptionId, LocalDateTime newExpirationDate) {
         Inscription inscription = inscriptionRepository.findById(inscriptionId)
                 .orElseThrow(() -> new RuntimeException("Inscription not found with id: " + inscriptionId));
         
@@ -56,18 +57,18 @@ public class InscriptionServiceImpl implements InscriptionService {
     @Override
     public boolean isAdherentActiveMember(Adherent adherent) {
         return findLatestInscriptionByAdherent(adherent)
-                .map(inscription -> !LocalDate.now().isAfter(inscription.getDateExpiration()))
+                .map(inscription -> !LocalDateTime.now().isAfter(inscription.getDateExpiration()))
                 .orElse(false);
     }
     
     @Override
     @Transactional
-    public Inscription createNewInscription(Adherent adherent, LocalDate dateExpiration) {
+    public Inscription createNewInscription(Adherent adherent, LocalDateTime dateExpiration) {
         Inscription inscription = new Inscription();
         inscription.setAdherent(adherent);
         
         // Utiliser la date actuelle comme date d'inscription
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
         inscription.setDateInscription(today);
         
         // Utiliser la date d'expiration fournie
@@ -80,10 +81,10 @@ public class InscriptionServiceImpl implements InscriptionService {
     @Transactional
     public Inscription createNewInscription(Adherent adherent, int durationInMonths) {
         // Utiliser la date actuelle comme date d'inscription
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
         
         // Calculer la date d'expiration basée sur la durée en mois
-        LocalDate expirationDate = today.plusMonths(durationInMonths);
+        LocalDateTime expirationDate = today.plusMonths(durationInMonths);
         
         // Utiliser la nouvelle méthode avec la date d'expiration calculée
         return createNewInscription(adherent, expirationDate);

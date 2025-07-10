@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -138,9 +140,9 @@ public class PretValidationServiceImpl implements PretValidationService {
     @Override
     public boolean validateNoPenalites(Adherent adherent) {
         if (penaliteService.hasActivePenalites(adherent)) {
-            LocalDate dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
+            LocalDateTime dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
             validationMessage = "Vous avez une pénalité en cours jusqu'au " + 
-                               dateFinPenalite.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                               dateFinPenalite.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) +
                                ". Veuillez attendre la fin de cette période pour emprunter à nouveau.";
             // Retourne false pour bloquer l'emprunt
             return false;
@@ -149,17 +151,23 @@ public class PretValidationServiceImpl implements PretValidationService {
     }
 
     @Override
-    public boolean validateNoPenalitesOnDate(Adherent adherent, LocalDate datePret) {
+    public boolean validateNoPenalitesOnDate(Adherent adherent, LocalDateTime datePret) {
         if (penaliteService.isPenalityActiveOnDate(adherent, datePret)) {
-            LocalDate dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
+            LocalDateTime dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
             validationMessage = "Vous avez une pénalité active à la date demandée (" + 
-                               datePret.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                               datePret.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) +
                                "). Veuillez choisir une date après le " + 
-                               dateFinPenalite.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) + 
+                               dateFinPenalite.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + 
                                " ou contacter un administrateur.";
             return false;
         }
         return true;
+    }
+    
+    // Surcharge pour accepter LocalDate et le convertir en LocalDateTime
+    @Override
+    public boolean validateNoPenalitesOnDate(Adherent adherent, LocalDate datePret) {
+        return validateNoPenalitesOnDate(adherent, datePret.atStartOfDay());
     }
 }
 

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -66,7 +68,7 @@ public class ReservationController {
         model.addAttribute("adherent", adherent);
         model.addAttribute("isActiveMember", isActiveMember);
         model.addAttribute("reservations", reservations);
-        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("today", LocalDateTime.now());
         
         // Grouper les réservations par statut pour l'affichage
         List<Reservation> reservationsEnAttente = reservationService.findReservationsByAdherentAndStatus(adherent, "EN_ATTENTE");
@@ -115,8 +117,8 @@ public class ReservationController {
         model.addAttribute("livre", livre);
         model.addAttribute("adherent", adherent);
         model.addAttribute("isActiveMember", isActiveMember);
-        model.addAttribute("minDate", LocalDate.now());
-        model.addAttribute("maxDate", LocalDate.now().plusMonths(1)); // Réservation possible jusqu'à 1 mois à l'avance
+        model.addAttribute("minDate", LocalDateTime.now());
+        model.addAttribute("maxDate", LocalDateTime.now().plusMonths(1)); // Réservation possible jusqu'à 1 mois à l'avance
         
         return "reservations/nouveau";
     }
@@ -141,17 +143,19 @@ public class ReservationController {
         }
         
         try {
-            // Convertir la date de réservation
-            LocalDate dateRes = LocalDate.parse(dateReservation);
+            // Convertir la date de réservation en LocalDateTime en combinant la date choisie avec l'heure actuelle
+            LocalDate dateResDate = LocalDate.parse(dateReservation);
+            LocalTime heureActuelle = LocalTime.now();
+            LocalDateTime dateRes = LocalDateTime.of(dateResDate, heureActuelle);
             
             // Vérifier que la date n'est pas dans le passé
-            // if (dateRes.isBefore(LocalDate.now())) {
+            // if (dateRes.isBefore(LocalDateTime.now())) {
             //     redirectAttributes.addFlashAttribute("error", "La date de réservation ne peut pas être dans le passé.");
             //     return "redirect:/reservations/nouveau?livreId=" + livreId;
             // }
             
             // Vérifier que la date n'est pas trop loin dans le futur
-            // if (dateRes.isAfter(LocalDate.now().plusMonths(1))) {
+            // if (dateRes.isAfter(LocalDateTime.now().plusMonths(1))) {
             //     redirectAttributes.addFlashAttribute("error", "La date de réservation ne peut pas être à plus d'un mois dans le futur.");
             //     return "redirect:/reservations/nouveau?livreId=" + livreId;
             // }

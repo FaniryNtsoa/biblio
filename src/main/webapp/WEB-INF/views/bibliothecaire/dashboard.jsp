@@ -38,16 +38,6 @@
                         </a>
                     </li>
                     <li>
-                        <a href="<c:url value='/bibliothecaire/adherents'/>">
-                            <i class="fas fa-users"></i> <span>Gestion des adhérents</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<c:url value='/bibliothecaire/statistiques'/>">
-                            <i class="fas fa-chart-bar"></i> <span>Statistiques</span>
-                        </a>
-                    </li>
-                    <li>
                         <a href="<c:url value='/bibliothecaire/logout'/>">
                             <i class="fas fa-sign-out-alt"></i> <span>Déconnexion</span>
                         </a>
@@ -139,49 +129,7 @@
                 </c:choose>
             </div>
             
-            <div class="dashboard-section">
-                <h2><i class="fas fa-chart-line"></i> Statistiques rapides</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon blue">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Livres empruntés</h3>
-                            <p>145</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon green">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Adhérents actifs</h3>
-                            <p>68</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon orange">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Retards</h3>
-                            <p>12</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon purple">
-                            <i class="fas fa-calendar-check"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Réservations ce mois</h3>
-                            <p>24</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
+            
     
     <style>
         .stats-grid {

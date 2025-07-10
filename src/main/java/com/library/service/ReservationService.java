@@ -1,6 +1,6 @@
 package com.library.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +17,7 @@ public interface ReservationService {
     Reservation updateStatusReservation(Long reservationId, StatusReservation statusReservation);
     
     // Nouvelles méthodes pour le système de réservation
-    Reservation createReservation(Adherent adherent, Livre livre, LocalDate dateReservation);
+    Reservation createReservation(Adherent adherent, Livre livre, LocalDateTime dateReservation);
     List<Reservation> findReservationsByAdherent(Adherent adherent);
     List<Reservation> findReservationsByStatus(String statusNom);
     List<Reservation> findReservationsByAdherentAndStatus(Adherent adherent, String statusNom);

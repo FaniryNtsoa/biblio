@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -69,8 +69,8 @@ public class ReservationServiceImpl implements ReservationService {
         HistoriqueStatusReservation historique = new HistoriqueStatusReservation();
         historique.setReservation(reservation);
         historique.setStatusReservation(statusReservation);
-        historique.setDateReservation(LocalDate.now());
-        historique.setDateChangement(LocalDate.now()); // Ajout de la date de changement
+        historique.setDateReservation(reservation.getDateReservation());
+        historique.setDateChangement(LocalDateTime.now()); // Ajout de la date de changement
         
         historiqueStatusReservationRepository.save(historique);
         
@@ -79,14 +79,16 @@ public class ReservationServiceImpl implements ReservationService {
     
     @Override
     @Transactional
-    public Reservation createReservation(Adherent adherent, Livre livre, LocalDate dateReservation) {
+    public Reservation createReservation(Adherent adherent, Livre livre, LocalDateTime dateReservation) {
         // Créer la réservation
         Reservation reservation = new Reservation();
         reservation.setAdherent(adherent);
         reservation.setLivre(livre);
         reservation.setDateReservation(dateReservation);
         
-        // Pas de date d'expiration ici comme spécifié
+        // Définir une date d'expiration (par exemple, 7 jours après la date de réservation)
+        LocalDateTime dateExpiration = dateReservation.plusDays(7);
+        reservation.setDateExpiration(dateExpiration);
         
         // Sauvegarder la réservation
         Reservation savedReservation = reservationRepository.save(reservation);
@@ -101,8 +103,9 @@ public class ReservationServiceImpl implements ReservationService {
         HistoriqueStatusReservation historique = new HistoriqueStatusReservation();
         historique.setReservation(savedReservation);
         historique.setStatusReservation(statusEnAttente);
-        historique.setDateReservation(LocalDate.now());
-        historique.setDateChangement(LocalDate.now()); // Ajout de la date de changement
+        // Utiliser la même date de réservation que celle choisie par l'adhérent
+        historique.setDateReservation(dateReservation);
+        historique.setDateChangement(LocalDateTime.now()); // La date du changement est la date actuelle
         
         historiqueStatusReservationRepository.save(historique);
         
@@ -178,7 +181,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public void updateExpiredReservations() {
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
         
         // Trouver toutes les réservations en attente avec une date de réservation passée
         List<Reservation> expiredReservations = getAllReservations().stream()
