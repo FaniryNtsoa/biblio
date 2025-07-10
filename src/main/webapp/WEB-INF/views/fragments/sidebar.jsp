@@ -55,22 +55,6 @@
                 </c:otherwise>
             </c:choose>
         </li>
-        <li class="${currentPage == 'historique' ? 'active' : ''}">
-            <c:choose>
-                <c:when test="${isActiveMember}">
-                    <a href="<c:url value='/historique'/>"><i class="fas fa-history"></i> Historique</a>
-                </c:when>
-                <c:otherwise>
-                    <a href="<c:url value='/inscription'/>" onclick="showMembershipAlert(event)">
-                        <i class="fas fa-history"></i> Historique
-                        <span class="menu-alert"><i class="fas fa-lock"></i></span>
-                    </a>
-                </c:otherwise>
-            </c:choose>
-        </li>
-        <li class="${currentPage == 'profil' ? 'active' : ''}">
-            <a href="#"><i class="fas fa-user-cog"></i> Mon profil</a>
-        </li>
         <li>
             <a href="<c:url value='/logout'/>"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
         </li>
