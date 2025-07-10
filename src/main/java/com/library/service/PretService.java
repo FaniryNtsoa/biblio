@@ -1,6 +1,6 @@
 package com.library.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ public interface PretService {
     // Méthodes de recherche
     List<Pret> findByAdherent(Adherent adherent);
     List<Pret> findByTypePret(TypePret typePret);
-    List<Pret> findByDatePretBetween(LocalDate dateDebut, LocalDate dateFin);
+    List<Pret> findByDatePretBetween(LocalDateTime dateDebut, LocalDateTime dateFin);
     long countByAdherent(Adherent adherent);
     
     // Nouvelles méthodes pour gérer les filtres et les retours

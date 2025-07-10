@@ -1,6 +1,6 @@
 package com.library.service.impl;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -105,7 +105,7 @@ public class PretServiceImpl implements PretService {
     }
 
     @Override
-    public List<Pret> findByDatePretBetween(LocalDate dateDebut, LocalDate dateFin) {
+    public List<Pret> findByDatePretBetween(LocalDateTime dateDebut, LocalDateTime dateFin) {
         // Implémentation sans méthode personnalisée dans le repository
         return pretRepository.findAll().stream()
                 .filter(pret -> !pret.getDatePret().isBefore(dateDebut) && !pret.getDatePret().isAfter(dateFin))
@@ -175,7 +175,7 @@ public class PretServiceImpl implements PretService {
             return Collections.emptyList();
         }
         
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
         
         return pretRepository.findAll().stream()
                 .filter(pret -> pret.getAdherent().getId().equals(adherent.getId()))
@@ -197,8 +197,8 @@ public class PretServiceImpl implements PretService {
             return Collections.emptyList();
         }
         
-        LocalDate today = LocalDate.now();
-        LocalDate limite = today.plusDays(joursRestants);
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime limite = today.plusDays(joursRestants);
         
         return pretRepository.findAll().stream()
                 .filter(pret -> pret.getAdherent().getId().equals(adherent.getId()))
@@ -279,7 +279,7 @@ public class PretServiceImpl implements PretService {
         historique.setPret(savedPret);
         historique.setExemplaire(exemplaire);
         historique.setStatusPret(statusEnCours);
-        historique.setDateChangement(LocalDate.now());
+        historique.setDateChangement(LocalDateTime.now());
         historique.setCommentaire("Prêt créé à partir d'une réservation");
         
         historiquePretRepository.save(historique);

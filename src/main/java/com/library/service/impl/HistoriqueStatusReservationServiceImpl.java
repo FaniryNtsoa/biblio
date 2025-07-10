@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,11 +50,11 @@ public class HistoriqueStatusReservationServiceImpl implements HistoriqueStatusR
     @Override
     public void deleteHistoriqueStatusReservation(Long id) {
         historiqueStatusReservationRepository.deleteById(id);
-    }
+    }   
 
     @Override
     @Transactional
-    public HistoriqueStatusReservation createHistoriqueStatusReservation(Long reservationId, Long statusReservationId) {
+    public HistoriqueStatusReservation createHistoriqueStatusReservation(Long reservationId, Long statusReservationId, String dateReservationStr) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Reservation not found with id: " + reservationId));
         
@@ -62,8 +64,18 @@ public class HistoriqueStatusReservationServiceImpl implements HistoriqueStatusR
         HistoriqueStatusReservation historique = new HistoriqueStatusReservation();
         historique.setReservation(reservation);
         historique.setStatusReservation(statusReservation);
-        historique.setDateReservation(LocalDate.now());
-        historique.setDateChangement(LocalDate.now()); // Ajout de la date de changement
+        
+        // Convertir la date de réservation si fournie
+        if (dateReservationStr != null && !dateReservationStr.isEmpty()) {
+            LocalDate dateResDate = LocalDate.parse(dateReservationStr);
+            LocalTime heureActuelle = LocalTime.now();
+            LocalDateTime dateReservation = LocalDateTime.of(dateResDate, heureActuelle);
+            historique.setDateReservation(dateReservation);
+        } else {
+            historique.setDateReservation(LocalDateTime.now());
+        }
+        
+        historique.setDateChangement(LocalDateTime.now());
         
         return historiqueStatusReservationRepository.save(historique);
     }

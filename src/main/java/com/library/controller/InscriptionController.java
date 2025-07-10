@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,11 +84,13 @@ public class InscriptionController {
         }
         
         try {
-            // Convertir la date d'expiration de chaîne à LocalDate
-            LocalDate dateExpiration = LocalDate.parse(dateExpirationStr);
+            // Convertir la date d'expiration de chaîne à LocalDateTime
+            // Corriger le problème de parsing en convertissant d'abord en LocalDate puis en LocalDateTime
+            LocalDate dateExpirationDate = LocalDate.parse(dateExpirationStr);
+            LocalDateTime dateExpiration = dateExpirationDate.atStartOfDay();
             
             // Vérifier que la date d'expiration est dans le futur
-            if (dateExpiration.isBefore(LocalDate.now())) {
+            if (dateExpiration.isBefore(LocalDateTime.now())) {
                 redirectAttributes.addFlashAttribute("error", "La date d'expiration doit être dans le futur.");
                 return "redirect:/inscription";
             }

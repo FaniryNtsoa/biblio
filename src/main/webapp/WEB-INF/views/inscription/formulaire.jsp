@@ -95,13 +95,7 @@
                                         </div>
                                         <p class="form-help">La date de début est automatiquement fixée à aujourd'hui</p>
                                     </div>
-                                    
-                                    <div class="duration-presets">
-                                        <button type="button" class="btn btn-outline duration-btn" data-months="1">1 mois</button>
-                                        <button type="button" class="btn btn-outline duration-btn" data-months="3">3 mois</button>
-                                        <button type="button" class="btn btn-outline duration-btn" data-months="6">6 mois</button>
-                                        <button type="button" class="btn btn-outline duration-btn" data-months="12">1 an</button>
-                                    </div>
+
                                 </div>
                                 
                                 <div class="form-actions">
@@ -117,37 +111,5 @@
         </main>
     </div>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Gestion des boutons de durée prédéfinie
-            const durationBtns = document.querySelectorAll('.duration-btn');
-            const dateInput = document.getElementById('dateExpiration');
-            
-            if (dateInput && durationBtns.length > 0) {
-                durationBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const months = parseInt(this.getAttribute('data-months'));
-                        const today = new Date();
-                        const targetDate = new Date(today);
-                        targetDate.setMonth(today.getMonth() + months);
-                        
-                        // Format the date as YYYY-MM-DD for the date input
-                        const formattedDate = targetDate.toISOString().split('T')[0];
-                        dateInput.value = formattedDate;
-                        
-                        // Highlight the selected button
-                        durationBtns.forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-                    });
-                });
-                
-                // Activer le bouton 3 mois par défaut
-                const defaultBtn = document.querySelector('[data-months="3"]');
-                if (defaultBtn) {
-                    defaultBtn.click();
-                }
-            }
-        });
-    </script>
 </body>
 </html>

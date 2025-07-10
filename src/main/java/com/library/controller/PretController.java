@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
@@ -124,7 +126,7 @@ public class PretController {
         
         // Date de fin de pénalité la plus lointaine
         if (hasPenalites) {
-            LocalDate dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
+            LocalDateTime dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
             model.addAttribute("dateFinPenalite", dateFinPenalite);
         }
         
@@ -212,7 +214,7 @@ public class PretController {
         
         // Vérifier si l'adhérent a des pénalités en cours et ajouter un avertissement
         if (penaliteService.hasActivePenalites(adherent)) {
-            LocalDate dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
+            LocalDateTime dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
             model.addAttribute("warning", 
                 "Attention: Vous avez une pénalité en cours jusqu'au " + 
                 dateFinPenalite.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
@@ -248,11 +250,13 @@ public class PretController {
         }
         
         try {
-            // Convertir la date de prêt
-            LocalDate datePreet = LocalDate.parse(datePret);
+            // Convertir la date de prêt en LocalDateTime en combinant la date choisie avec l'heure actuelle
+            LocalDate datePreetDate = LocalDate.parse(datePret);
+            LocalTime heureActuelle = LocalTime.now();
+            LocalDateTime datePreet = LocalDateTime.of(datePreetDate, heureActuelle);
             
             // Vérifier que la date n'est pas dans le passé
-            // if (datePreet.isBefore(LocalDate.now())) {
+            // if (datePreet.isBefore(LocalDateTime.now())) {
             //     redirectAttributes.addFlashAttribute("error", "La date de prêt ne peut pas être dans le passé.");
             //     return "redirect:/prets/nouveau?livreId=" + livreId;
             // }
@@ -303,7 +307,7 @@ public class PretController {
             }
             
             // Calculer la date de retour prévue
-            LocalDate dateRetourPrevue = null;
+            LocalDateTime dateRetourPrevue = null;
             if (!typePret.get().getSurPlace()) {
                 int dureePret = gestionAdherentService.getDureePretForAdherent(adherent);
                 dateRetourPrevue = datePreet.plusDays(dureePret);
@@ -336,7 +340,7 @@ public class PretController {
             String message = typePret.get().getSurPlace() 
                 ? "Consultation sur place de \"" + livre.get().getTitre() + "\" enregistrée avec succès !"
                 : "Votre prêt de \"" + livre.get().getTitre() + "\" a été enregistré avec succès ! À rendre le " + 
-                  dateRetourPrevue.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                  dateRetourPrevue.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
             
             redirectAttributes.addFlashAttribute("success", message);
             
@@ -388,14 +392,14 @@ public class PretController {
         }
         
         if (dateDebut != null && !dateDebut.isEmpty()) {
-            LocalDate debut = LocalDate.parse(dateDebut);
+            LocalDateTime debut = LocalDateTime.parse(dateDebut);
             prets = prets.stream()
                 .filter(p -> p.getDatePret().isEqual(debut) || p.getDatePret().isAfter(debut))
                 .collect(Collectors.toList());
         }
         
         if (dateFin != null && !dateFin.isEmpty()) {
-            LocalDate fin = LocalDate.parse(dateFin);
+            LocalDateTime fin = LocalDateTime.parse(dateFin);
             prets = prets.stream()
                 .filter(p -> p.getDatePret().isEqual(fin) || p.getDatePret().isBefore(fin))
                 .collect(Collectors.toList());
@@ -449,8 +453,10 @@ public class PretController {
         }
         
         try {
-            // Convertir la date de retour
-            LocalDate dateRetourLd = LocalDate.parse(dateRetour);
+            // Convertir la date de retour en LocalDateTime en combinant la date choisie avec l'heure actuelle
+            LocalDate dateRetourDate = LocalDate.parse(dateRetour);
+            LocalTime heureActuelle = LocalTime.now();
+            LocalDateTime dateRetourLdt = LocalDateTime.of(dateRetourDate, heureActuelle);
             
             // Récupérer le prêt
             Optional<Pret> pretOpt = pretService.getPretById(id);
@@ -483,19 +489,19 @@ public class PretController {
             historiquePretService.createHistoriquePret(
                 pret.getId(), 
                 statusRendu.getId(), 
-                dateRetourLd
+                dateRetourLdt
             );
             
             // Vérifier si le retour est en retard et créer une pénalité si nécessaire
-            if (pret.getDateRetourPrevue() != null && dateRetourLd.isAfter(pret.getDateRetourPrevue())) {
+            if (pret.getDateRetourPrevue() != null && dateRetourLdt.isAfter(pret.getDateRetourPrevue())) {
                 // Calculer les jours de retard pour debug
-                long joursRetard = ChronoUnit.DAYS.between(pret.getDateRetourPrevue(), dateRetourLd);
-                System.out.println("DEBUG - Retard détecté: " + joursRetard + " jour(s)");
-                System.out.println("DEBUG - Date retour prévue: " + pret.getDateRetourPrevue());
-                System.out.println("DEBUG - Date retour réelle: " + dateRetourLd);
+                long joursRetard = ChronoUnit.DAYS.between(
+                    pret.getDateRetourPrevue(),
+                    dateRetourLdt
+                );
                 
                 // Créer une pénalité pour le retard
-                Penalite penalite = penaliteService.createPenaliteForRetard(pret, dateRetourLd);
+                Penalite penalite = penaliteService.createPenaliteForRetard(pret, dateRetourLdt);
                 
                 if (penalite != null) {
                     System.out.println("DEBUG - Pénalité créée: ID=" + penalite.getId());
@@ -504,12 +510,12 @@ public class PretController {
                     System.out.println("DEBUG - Active: " + penalite.getActive());
                     System.out.println("DEBUG - Date fin: " + penalite.getDateFinPenalite());
                     
-                    LocalDate dateFinPenalite = penalite.getDateFinPenalite();
+                    LocalDateTime dateFinPenalite = penalite.getDateFinPenalite();
                     
                     redirectAttributes.addFlashAttribute("warning", 
                         "Livre retourné avec " + penalite.getNbJoursRetard() + " jour(s) de retard. " +
                         "Vous ne pourrez pas emprunter de nouveaux livres jusqu'au " + 
-                        dateFinPenalite.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ".");
+                        dateFinPenalite.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + ".");
                 } else {
                     System.out.println("DEBUG - Aucune pénalité créée malgré le retard.");
                     redirectAttributes.addFlashAttribute("success", "Livre retourné avec succès, mais une erreur est survenue lors de la création de la pénalité.");
@@ -551,7 +557,7 @@ public class PretController {
         model.addAttribute("hasPenalites", !penalitesActives.isEmpty());
         
         if (!penalitesActives.isEmpty()) {
-            LocalDate dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
+            LocalDateTime dateFinPenalite = penaliteService.getDateFinPenalite(adherent);
             model.addAttribute("dateFinPenalite", dateFinPenalite);
         }
         

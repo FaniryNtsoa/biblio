@@ -1,7 +1,7 @@
 package com.library.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,10 +22,10 @@ public class Reservation {
     private Livre livre;
     
     @Column(name = "date_reservation", nullable = false)
-    private LocalDate dateReservation;
+    private LocalDateTime dateReservation;
     
-    @Column(name = "date_expiration")
-    private LocalDate dateExpiration;
+    @Column(name = "date_expiration", nullable = false)
+    private LocalDateTime dateExpiration;
     
     @OneToMany(mappedBy = "reservation")
     private Set<HistoriqueStatusReservation> historiqueStatusReservations = new HashSet<>();
@@ -55,19 +55,19 @@ public class Reservation {
         this.livre = livre;
     }
 
-    public LocalDate getDateReservation() {
+    public LocalDateTime getDateReservation() {
         return dateReservation;
     }
 
-    public void setDateReservation(LocalDate dateReservation) {
+    public void setDateReservation(LocalDateTime dateReservation) {
         this.dateReservation = dateReservation;
     }
 
-    public LocalDate getDateExpiration() {
+    public LocalDateTime getDateExpiration() {
         return dateExpiration;
     }
 
-    public void setDateExpiration(LocalDate dateExpiration) {
+    public void setDateExpiration(LocalDateTime dateExpiration) {
         this.dateExpiration = dateExpiration;
     }
 
