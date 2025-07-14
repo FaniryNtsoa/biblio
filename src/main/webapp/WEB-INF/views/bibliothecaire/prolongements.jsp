@@ -24,22 +24,12 @@
                 <ul>
                     <li>
                         <a href="<c:url value='/bibliothecaire/dashboard'/>">
-                            <i class="fas fa-tachometer-alt"></i> <span>Tableau de bord</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<c:url value='/bibliothecaire/prets'/>">
-                            <i class="fas fa-book-open"></i> <span>Gestion des prêts</span>
+                            <i class="fas fa-tachometer-alt"></i> <span>Réservations</span>
                         </a>
                     </li>
                     <li class="active">
                         <a href="<c:url value='/bibliothecaire/prolongements'/>">
                             <i class="fas fa-hourglass-half"></i> <span>Prolongements</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<c:url value='/bibliothecaire/livres'/>">
-                            <i class="fas fa-book"></i> <span>Gestion des livres</span>
                         </a>
                     </li>
                     <li>
