@@ -1,5 +1,7 @@
 package com.library.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -17,6 +19,17 @@ public class HistoriqueProlongement {
     @ManyToOne
     @JoinColumn(name = "prolongement_id", nullable = false)
     private Prolongement prolongement;
+
+    @Column(name = "date_changement", nullable = false)
+    private LocalDateTime dateChangement;
+
+    public LocalDateTime getDateChangement() {
+        return dateChangement;
+    }
+
+    public void setDateChangement(LocalDateTime dateChangement) {
+        this.dateChangement = dateChangement;
+    }
 
     // Getters and Setters
     public Long getId() {
