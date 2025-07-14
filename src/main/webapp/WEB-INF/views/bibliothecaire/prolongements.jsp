@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de bord - Bibliothécaire</title>
+    <title>Gestion des prolongements - Bibliothécaire</title>
     <link rel="stylesheet" href="<c:url value='/css/style.css'/>">
     <link rel="stylesheet" href="<c:url value='/css/bibliothecaire.css'/>">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
             
             <nav class="sidebar-nav">
                 <ul>
-                    <li class="active">
+                    <li>
                         <a href="<c:url value='/bibliothecaire/dashboard'/>">
                             <i class="fas fa-tachometer-alt"></i> <span>Tableau de bord</span>
                         </a>
@@ -32,7 +32,7 @@
                             <i class="fas fa-book-open"></i> <span>Gestion des prêts</span>
                         </a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="<c:url value='/bibliothecaire/prolongements'/>">
                             <i class="fas fa-hourglass-half"></i> <span>Prolongements</span>
                         </a>
@@ -53,7 +53,7 @@
         
         <main class="content">
             <header class="content-header">
-                <h1><i class="fas fa-tachometer-alt"></i> Tableau de bord</h1>
+                <h1><i class="fas fa-hourglass-half"></i> Gestion des prolongements</h1>
                 <div class="user-info">
                     <i class="fas fa-user-tie"></i>
                     <span>Bibliothécaire: ${bibliothecaire.username}</span>
@@ -73,10 +73,10 @@
             </c:if>
             
             <div class="dashboard-section">
-                <h2><i class="fas fa-clock"></i> Réservations en attente (${reservationsEnAttente.size()})</h2>
+                <h2><i class="fas fa-clock"></i> Demandes de prolongement en attente (${prolongementsEnAttente.size()})</h2>
                 
                 <c:choose>
-                    <c:when test="${not empty reservationsEnAttente}">
+                    <c:when test="${not empty prolongementsEnAttente}">
                         <div class="table-responsive">
                             <table class="data-table">
                                 <thead>
@@ -84,36 +84,41 @@
                                         <th>ID</th>
                                         <th>Adhérent</th>
                                         <th>Livre</th>
-                                        <th>Date de réservation</th>
-                                        <th>Date de la demande</th>
+                                        <th>Date du prêt</th>
+                                        <th>Date de retour actuelle</th>
+                                        <th>Nouvelle date si accepté</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach var="reservation" items="${reservationsEnAttente}">
+                                    <c:forEach var="prolongement" items="${prolongementsEnAttente}">
                                         <tr>
-                                            <td>${reservation.id}</td>
-                                            <td>${reservation.adherent.prenom} ${reservation.adherent.nom}</td>
-                                            <td>${reservation.livre.titre}</td>
+                                            <td>${prolongement.id}</td>
+                                            <td>${prolongement.pret.adherent.prenom} ${prolongement.pret.adherent.nom}</td>
+                                            <td>${prolongement.pret.exemplaire.livre.titre}</td>
                                             <td>
-                                                <fmt:parseDate value="${reservation.dateReservation}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+                                                <fmt:parseDate value="${prolongement.pret.datePret}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
                                                 <fmt:formatDate value="${parsedDate}" type="date" pattern="dd/MM/yyyy" />
                                             </td>
                                             <td>
-                                                <c:forEach var="historique" items="${reservation.historiqueStatusReservations}" varStatus="loop">
-                                                    <c:if test="${loop.first}">
-                                                        <fmt:parseDate value="${historique.dateReservation}" pattern="yyyy-MM-dd" var="parsedDateDemande" type="date" />
-                                                        <fmt:formatDate value="${parsedDateDemande}" type="date" pattern="dd/MM/yyyy" />
-                                                    </c:if>
-                                                </c:forEach>
+                                                <fmt:parseDate value="${prolongement.pret.dateRetourPrevue}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
+                                                <fmt:formatDate value="${parsedDate}" type="date" pattern="dd/MM/yyyy" />
+                                            </td>
+                                            <td>
+                                                <jsp:useBean id="dateCalculator" class="java.util.Date" />
+                                                <c:set var="millisecondsPerDay" value="86400000" />
+                                                <fmt:parseDate value="${prolongement.pret.dateRetourPrevue}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
+                                                <c:set var="newDateMillis" value="${parsedDate.time + (prolongement.nbJour * millisecondsPerDay)}" />
+                                                <jsp:setProperty name="dateCalculator" property="time" value="${newDateMillis}" />
+                                                <fmt:formatDate value="${dateCalculator}" pattern="dd/MM/yyyy" />
                                             </td>
                                             <td class="actions">
-                                                <form action="<c:url value='/bibliothecaire/reservations/${reservation.id}/accept'/>" method="post" style="display:inline;">
+                                                <form action="<c:url value='/bibliothecaire/prolongements/${prolongement.id}/accept'/>" method="post" style="display:inline;">
                                                     <button type="submit" class="btn btn-sm btn-success">
                                                         <i class="fas fa-check"></i> Accepter
                                                     </button>
                                                 </form>
-                                                <form action="<c:url value='/bibliothecaire/reservations/${reservation.id}/reject'/>" method="post" style="display:inline;">
+                                                <form action="<c:url value='/bibliothecaire/prolongements/${prolongement.id}/reject'/>" method="post" style="display:inline;">
                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="fas fa-times"></i> Rejeter
                                                     </button>
@@ -128,88 +133,50 @@
                     <c:otherwise>
                         <div class="empty-state">
                             <i class="fas fa-check-circle"></i>
-                            <p>Aucune réservation en attente</p>
+                            <p>Aucune demande de prolongement en attente</p>
                         </div>
                     </c:otherwise>
                 </c:choose>
             </div>
             
-            
+            <div class="info-box" style="margin-top: 20px;">
+                <h3><i class="fas fa-info-circle"></i> Règles de prolongement</h3>
+                <ul>
+                    <li>Un seul prolongement est autorisé par prêt.</li>
+                    <li>La durée du prolongement est égale à la durée de prêt standard pour l'adhérent concerné.</li>
+                    <li>Lorsqu'un prolongement est accepté, la date de retour prévue du prêt est automatiquement mise à jour.</li>
+                    <li>Les pénalités de retard sont calculées à partir de la nouvelle date de retour prévue.</li>
+                </ul>
+            </div>
+        </main>
+    </div>
     
     <style>
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .stat-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        .info-box {
+            background-color: #e3f2fd;
+            border-radius: 8px;
             padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
         }
         
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        .info-box h3 i {
+            margin-right: 10px;
         }
         
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 24px;
-            color: white;
+        .info-box ul {
+            margin-left: 30px;
+            color: #555;
         }
         
-        .stat-icon.blue {
-            background-color: #3949ab;
-            border-color: #3949ab;
-        }
-        
-        .stat-icon.green {
-            background-color: #4caf50;
-            border-color: #4caf50;
-        }
-        
-        .stat-icon.orange {
-            background-color: #ff9800;
-            border-color: #ff9800;
-        }
-        
-        .stat-icon.purple {
-            background-color: #9c27b0;
-            border-color: #9c27b0;
-        }
-        
-        .stat-info h3 {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 5px;
-            font-weight: normal;
-        }
-        
-        .stat-info p {
-            font-size: 24px;
-            font-weight: 600;
-            color: #333;
-            margin: 0;
-        }
-        
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
+        .info-box li {
+            margin-bottom: 8px;
         }
     </style>
 </body>

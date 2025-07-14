@@ -7,12 +7,20 @@ import com.library.model.StatusProlongement;
 import com.library.repository.ProlongementRepository;
 import com.library.repository.HistoriqueProlongementRepository;
 import com.library.repository.PretRepository;
+import com.library.repository.StatusProlongementRepository;
 import com.library.service.ProlongementService;
+import com.library.service.GestionAdherentService;
+import com.library.service.PretService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProlongementServiceImpl implements ProlongementService {
@@ -20,14 +28,23 @@ public class ProlongementServiceImpl implements ProlongementService {
     private final ProlongementRepository prolongementRepository;
     private final HistoriqueProlongementRepository historiqueProlongementRepository;
     private final PretRepository pretRepository;
+    private final StatusProlongementRepository statusProlongementRepository;
+    private final GestionAdherentService gestionAdherentService;
+    private final PretService pretService;
 
     @Autowired
     public ProlongementServiceImpl(ProlongementRepository prolongementRepository,
                                   HistoriqueProlongementRepository historiqueProlongementRepository,
-                                  PretRepository pretRepository) {
+                                  PretRepository pretRepository,
+                                  StatusProlongementRepository statusProlongementRepository,
+                                  GestionAdherentService gestionAdherentService,
+                                  PretService pretService) {
         this.prolongementRepository = prolongementRepository;
         this.historiqueProlongementRepository = historiqueProlongementRepository;
         this.pretRepository = pretRepository;
+        this.statusProlongementRepository = statusProlongementRepository;
+        this.gestionAdherentService = gestionAdherentService;
+        this.pretService = pretService;
     }
 
     @Override
@@ -57,11 +74,28 @@ public class ProlongementServiceImpl implements ProlongementService {
         Pret pret = pretRepository.findById(pretId)
                 .orElseThrow(() -> new RuntimeException("Prêt not found with id: " + pretId));
         
+        // Vérifier qu'il n'y a pas déjà un prolongement pour ce prêt
+        if (hasPretActiveProlongement(pret) || hasPretCompletedProlongement(pret)) {
+            throw new RuntimeException("Ce prêt a déjà un prolongement actif ou accepté");
+        }
+        
         Prolongement prolongement = new Prolongement();
         prolongement.setPret(pret);
         prolongement.setNbJour(nbJours);
         
-        return prolongementRepository.save(prolongement);
+        Prolongement savedProlongement = prolongementRepository.save(prolongement);
+        
+        // Créer l'historique initial avec statut EN_ATTENTE
+        StatusProlongement statusEnAttente = getStatusByName("EN_ATTENTE");
+        
+        HistoriqueProlongement historique = new HistoriqueProlongement();
+        historique.setProlongement(savedProlongement);
+        historique.setStatusProlongement(statusEnAttente);
+        historique.setDateChangement(LocalDateTime.now());
+        
+        historiqueProlongementRepository.save(historique);
+        
+        return savedProlongement;
     }
 
     @Override
@@ -73,9 +107,141 @@ public class ProlongementServiceImpl implements ProlongementService {
         HistoriqueProlongement historique = new HistoriqueProlongement();
         historique.setProlongement(prolongement);
         historique.setStatusProlongement(statusProlongement);
+        historique.setDateChangement(LocalDateTime.now());
         
         historiqueProlongementRepository.save(historique);
         
         return prolongement;
+    }
+    
+    @Override
+    public boolean hasPretActiveProlongement(Pret pret) {
+        return prolongementRepository.findAll().stream()
+                .filter(p -> p.getPret().getId().equals(pret.getId()))
+                .anyMatch(p -> getLatestStatusName(p).equals("EN_ATTENTE"));
+    }
+    
+    @Override
+    public boolean hasPretCompletedProlongement(Pret pret) {
+        return prolongementRepository.findAll().stream()
+                .filter(p -> p.getPret().getId().equals(pret.getId()))
+                .anyMatch(p -> getLatestStatusName(p).equals("ACCEPTEE"));
+    }
+    
+    @Override
+    public Optional<Prolongement> findActiveProlongementByPret(Pret pret) {
+        return prolongementRepository.findAll().stream()
+                .filter(p -> p.getPret().getId().equals(pret.getId()))
+                .filter(p -> getLatestStatusName(p).equals("ACCEPTEE") || getLatestStatusName(p).equals("EN_ATTENTE"))
+                .findFirst();
+    }
+    
+    @Override
+    public List<Prolongement> findPendingProlongements() {
+        return prolongementRepository.findAll().stream()
+                .filter(p -> getLatestStatusName(p).equals("EN_ATTENTE"))
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    @Transactional
+    public Prolongement createProlongementRequest(Pret pret) {
+        // Vérifier si le prêt a déjà un prolongement
+        if (hasPretActiveProlongement(pret) || hasPretCompletedProlongement(pret)) {
+            throw new RuntimeException("Ce prêt a déjà un prolongement actif ou accepté");
+        }
+        
+        // Déterminer la durée du prolongement (même que la durée de prêt)
+        int dureeProlongement = gestionAdherentService.getDureePretForAdherent(pret.getAdherent());
+        
+        // Créer le prolongement
+        return createProlongementForPret(pret.getId(), dureeProlongement);
+    }
+    
+    @Override
+    @Transactional
+    public boolean acceptProlongement(Long prolongementId) {
+        Prolongement prolongement = prolongementRepository.findById(prolongementId)
+                .orElseThrow(() -> new RuntimeException("Prolongement not found with id: " + prolongementId));
+        
+        // Vérifier que le prolongement est en attente
+        if (!isProlongementEnAttente(prolongement)) {
+            throw new RuntimeException("Ce prolongement n'est pas en attente de validation");
+        }
+        
+        // Mettre à jour le statut
+        StatusProlongement statusAcceptee = getStatusByName("ACCEPTEE");
+        updateStatusProlongement(prolongementId, statusAcceptee);
+        
+        // Mettre à jour la date de retour prévue du prêt
+        Pret pret = prolongement.getPret();
+        LocalDateTime nouvelleDate = pret.getDateRetourPrevue().plusDays(prolongement.getNbJour());
+        pret.setDateRetourPrevue(nouvelleDate);
+        pretRepository.save(pret);
+        
+        return true;
+    }
+    
+    @Override
+    @Transactional
+    public boolean rejectProlongement(Long prolongementId) {
+        Prolongement prolongement = prolongementRepository.findById(prolongementId)
+                .orElseThrow(() -> new RuntimeException("Prolongement not found with id: " + prolongementId));
+        
+        // Vérifier que le prolongement est en attente
+        if (!isProlongementEnAttente(prolongement)) {
+            throw new RuntimeException("Ce prolongement n'est pas en attente de validation");
+        }
+        
+        // Mettre à jour le statut
+        StatusProlongement statusRejetee = getStatusByName("REJETEE");
+        updateStatusProlongement(prolongementId, statusRejetee);
+        
+        return true;
+    }
+    
+    @Override
+    @Transactional
+    public boolean cancelProlongement(Long prolongementId) {
+        Prolongement prolongement = prolongementRepository.findById(prolongementId)
+                .orElseThrow(() -> new RuntimeException("Prolongement not found with id: " + prolongementId));
+        
+        // Vérifier que le prolongement est en attente
+        if (!isProlongementEnAttente(prolongement)) {
+            throw new RuntimeException("Ce prolongement n'est pas en attente de validation");
+        }
+        
+        // Mettre à jour le statut
+        StatusProlongement statusAnnulee = getStatusByName("ANNULEE");
+        updateStatusProlongement(prolongementId, statusAnnulee);
+        
+        return true;
+    }
+    
+    @Override
+    public String getLatestStatusName(Prolongement prolongement) {
+        return historiqueProlongementRepository.findAll().stream()
+                .filter(h -> h.getProlongement().getId().equals(prolongement.getId()))
+                .max(Comparator.comparing(HistoriqueProlongement::getDateChangement))
+                .map(h -> h.getStatusProlongement().getNom())
+                .orElse(null);
+    }
+    
+    @Override
+    public boolean isProlongementEnAttente(Prolongement prolongement) {
+        return "EN_ATTENTE".equals(getLatestStatusName(prolongement));
+    }
+    
+    @Override
+    public boolean isProlongementAccepte(Prolongement prolongement) {
+        return "ACCEPTEE".equals(getLatestStatusName(prolongement));
+    }
+    
+    // Méthode utilitaire pour obtenir un statut par son nom
+    private StatusProlongement getStatusByName(String nom) {
+        return statusProlongementRepository.findAll().stream()
+                .filter(s -> s.getNom().equals(nom))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Statut " + nom + " non trouvé"));
     }
 }

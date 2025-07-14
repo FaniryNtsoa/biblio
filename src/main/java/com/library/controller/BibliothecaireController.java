@@ -1,5 +1,6 @@
 package com.library.controller;
 
+import com.library.model.Prolongement;
 import com.library.model.Reservation;
 import com.library.model.StatusReservation;
 import com.library.model.User;
@@ -9,6 +10,7 @@ import com.library.service.UserService;
 import com.library.service.PretService;
 import com.library.service.HistoriqueStatusReservationService;
 import com.library.service.PenaliteService;
+import com.library.service.ProlongementService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +35,7 @@ public class BibliothecaireController {
     private final PretService pretService;
     private final HistoriqueStatusReservationService historiqueStatusReservationService;
     private final PenaliteService penaliteService;
+    private final ProlongementService prolongementService;
     
     @Autowired
     public BibliothecaireController(UserService userService, 
@@ -39,13 +43,15 @@ public class BibliothecaireController {
                                   StatusReservationService statusReservationService,
                                   PretService pretService,
                                   HistoriqueStatusReservationService historiqueStatusReservationService,
-                                  PenaliteService penaliteService) {
+                                  PenaliteService penaliteService,
+                                  ProlongementService prolongementService) {
         this.userService = userService;
         this.reservationService = reservationService;
         this.statusReservationService = statusReservationService;
         this.pretService = pretService;
         this.historiqueStatusReservationService = historiqueStatusReservationService;
         this.penaliteService = penaliteService;
+        this.prolongementService = prolongementService;
     }
     
     @GetMapping("/login")
@@ -208,5 +214,63 @@ public class BibliothecaireController {
             redirectAttributes.addFlashAttribute("error", "Erreur lors du rejet: " + e.getMessage());
             return "redirect:/bibliothecaire/dashboard";
         }
+    }
+    
+    @GetMapping("/prolongements")
+    public String showProlongements(HttpSession session, Model model) {
+        // Vérifier si la bibliothécaire est connectée
+        User bibliothecaire = (User) session.getAttribute("bibliothecaire");
+        if (bibliothecaire == null || !bibliothecaire.isBibliothecaire()) {
+            return "redirect:/bibliothecaire/login";
+        }
+        
+        // Récupérer les prolongements en attente
+        List<Prolongement> prolongementsEnAttente = prolongementService.findPendingProlongements();
+        
+        model.addAttribute("bibliothecaire", bibliothecaire);
+        model.addAttribute("prolongementsEnAttente", prolongementsEnAttente);
+        model.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        
+        return "bibliothecaire/prolongements";
+    }
+    
+    @PostMapping("/prolongements/{id}/accept")
+    public String acceptProlongement(@PathVariable Long id,
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
+        // Vérifier si la bibliothécaire est connectée
+        User bibliothecaire = (User) session.getAttribute("bibliothecaire");
+        if (bibliothecaire == null || !bibliothecaire.isBibliothecaire()) {
+            return "redirect:/bibliothecaire/login";
+        }
+        
+        try {
+            prolongementService.acceptProlongement(id);
+            redirectAttributes.addFlashAttribute("success", "Prolongement accepté avec succès");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de l'acceptation: " + e.getMessage());
+        }
+        
+        return "redirect:/bibliothecaire/prolongements";
+    }
+    
+    @PostMapping("/prolongements/{id}/reject")
+    public String rejectProlongement(@PathVariable Long id,
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
+        // Vérifier si la bibliothécaire est connectée
+        User bibliothecaire = (User) session.getAttribute("bibliothecaire");
+        if (bibliothecaire == null || !bibliothecaire.isBibliothecaire()) {
+            return "redirect:/bibliothecaire/login";
+        }
+        
+        try {
+            prolongementService.rejectProlongement(id);
+            redirectAttributes.addFlashAttribute("success", "Prolongement rejeté avec succès");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors du rejet: " + e.getMessage());
+        }
+        
+        return "redirect:/bibliothecaire/prolongements";
     }
 }
