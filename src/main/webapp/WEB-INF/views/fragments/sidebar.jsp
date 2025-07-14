@@ -55,6 +55,19 @@
                 </c:otherwise>
             </c:choose>
         </li>
+        <li class="${currentPage == 'prolongements' ? 'active' : ''}">
+            <c:choose>
+                <c:when test="${isActiveMember}">
+                    <a href="<c:url value='/prolongements'/>"><i class="fas fa-hourglass-half"></i> Prolongements</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="<c:url value='/inscription'/>" onclick="showMembershipAlert(event)">
+                        <i class="fas fa-hourglass-half"></i> Prolongements
+                        <span class="menu-alert"><i class="fas fa-lock"></i></span>
+                    </a>
+                </c:otherwise>
+            </c:choose>
+        </li>
         <li>
             <a href="<c:url value='/logout'/>"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
         </li>

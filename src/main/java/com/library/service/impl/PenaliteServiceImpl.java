@@ -133,6 +133,10 @@ public class PenaliteServiceImpl implements PenaliteService {
             return 0;
         }
         
+        // Utiliser la date de retour prévue du prêt qui est déjà mise à jour
+        // en cas de prolongement accepté via ProlongementService.acceptProlongement
+        // Ainsi, si un prolongement a été accepté, les pénalités sont calculées 
+        // par rapport à la nouvelle date de retour prévue
         long joursRetard = ChronoUnit.DAYS.between(pret.getDateRetourPrevue(), dateRetour);
         return joursRetard > 0 ? (int) joursRetard : 0;
     }
