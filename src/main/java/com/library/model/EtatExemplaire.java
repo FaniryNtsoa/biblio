@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "etat_exemplaire")
 public class EtatExemplaire {
@@ -16,6 +18,7 @@ public class EtatExemplaire {
     private String nom;
     
     @OneToMany(mappedBy = "etatExemplaire")
+    @JsonIgnore
     private Set<Exemplaire> exemplaires = new HashSet<>();
 
     // Getters and Setters

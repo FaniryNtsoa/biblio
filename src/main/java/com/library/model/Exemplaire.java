@@ -1,5 +1,7 @@
 package com.library.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +18,7 @@ public class Exemplaire {
     
     @ManyToOne
     @JoinColumn(name = "livre_id", nullable = false)
+    @JsonIgnore
     private Livre livre;
 
     // Getters and Setters

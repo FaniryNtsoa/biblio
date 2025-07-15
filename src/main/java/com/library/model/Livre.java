@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "livre")
 public class Livre {
@@ -49,6 +51,7 @@ public class Livre {
     private Set<Exemplaire> exemplaires = new HashSet<>();
     
     @OneToMany(mappedBy = "livre")
+    @JsonIgnore
     private Set<Reservation> reservations = new HashSet<>();
 
     // Getters and Setters

@@ -8,11 +8,14 @@ import com.library.service.CategorieService;
 import com.library.service.InscriptionService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -147,5 +150,24 @@ public class LivreController {
         model.addAttribute("adherent", adherent);
         
         return "livres/detail";
+    }
+
+    //api pour récupérer des livres et ses détails
+    @GetMapping("/api/all")
+    @ResponseBody
+    public List<Livre> getAllLivresApi() {
+        return livreService.getAllLivres();
+    }
+    
+    @GetMapping("/api/{id}")
+    @ResponseBody
+    public ResponseEntity<?> getLivreApi(@PathVariable Long id) {
+        Optional<Livre> livre = livreService.getLivreById(id);
+        if (livre.isPresent()) {
+            return ResponseEntity.ok(livre.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Livre non trouvé", "id", id));
+        }
     }
 }
