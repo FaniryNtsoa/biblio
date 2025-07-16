@@ -68,6 +68,12 @@
                 </c:otherwise>
             </c:choose>
         </li>
+        <li class="${currentPage == 'jours-feries' ? 'active' : ''}">
+            <a href="<c:url value='/jours-feries'/>">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Jours fériés</span>
+            </a>
+        </li>
         <li>
             <a href="<c:url value='/logout'/>"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
         </li>

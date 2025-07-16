@@ -10,6 +10,7 @@ import com.library.service.LivreService;
 import com.library.service.TypePretService;
 import com.library.service.InscriptionService;
 import com.library.service.PretValidationService;
+import com.library.service.DateCalculationService;
 import com.library.service.ExemplaireAvailabilityService;
 import com.library.service.HistoriquePretService;
 import com.library.service.StatusPretService;
@@ -47,6 +48,7 @@ public class PretController {
     private final StatusPretService statusPretService;
     private final GestionAdherentService gestionAdherentService;
     private final PenaliteService penaliteService;
+    private final DateCalculationService dateCalculationService;
 
     @Autowired
     public PretController(PretService pretService, 
@@ -58,7 +60,8 @@ public class PretController {
                          HistoriquePretService historiquePretService,
                          StatusPretService statusPretService,
                          GestionAdherentService gestionAdherentService,
-                         PenaliteService penaliteService) {
+                         PenaliteService penaliteService,
+                         DateCalculationService dateCalculationService) {
         this.pretService = pretService;
         this.livreService = livreService;
         this.typePretService = typePretService;
@@ -69,6 +72,7 @@ public class PretController {
         this.statusPretService = statusPretService;
         this.gestionAdherentService = gestionAdherentService;
         this.penaliteService = penaliteService;
+        this.dateCalculationService = dateCalculationService;
     }
 
     @GetMapping
@@ -255,11 +259,11 @@ public class PretController {
             LocalTime heureActuelle = LocalTime.now();
             LocalDateTime datePreet = LocalDateTime.of(datePreetDate, heureActuelle);
             
-            // Vérifier que la date n'est pas dans le passé
-            // if (datePreet.isBefore(LocalDateTime.now())) {
-            //     redirectAttributes.addFlashAttribute("error", "La date de prêt ne peut pas être dans le passé.");
-            //     return "redirect:/prets/nouveau?livreId=" + livreId;
-            // }
+            // Vérifier que la date n'est pas un jour férié ou un dimanche
+            if (!pretValidationService.validateJourOuvre(datePreetDate)) {
+                redirectAttributes.addFlashAttribute("error", pretValidationService.getValidationMessage());
+                return "redirect:/prets/nouveau?livreId=" + livreId;
+            }
             
             // Vérifier que le livre existe
             Optional<Livre> livre = livreService.getLivreById(livreId);
@@ -306,11 +310,11 @@ public class PretController {
                 return "redirect:/prets/nouveau?livreId=" + livreId;
             }
             
-            // Calculer la date de retour prévue
+            // Calculer la date de retour prévue en tenant compte des jours non ouvrés
             LocalDateTime dateRetourPrevue = null;
             if (!typePret.get().getSurPlace()) {
                 int dureePret = gestionAdherentService.getDureePretForAdherent(adherent);
-                dateRetourPrevue = datePreet.plusDays(dureePret);
+                dateRetourPrevue = dateCalculationService.addJoursOuvres(datePreet, dureePret);
             }
             
             // Créer le prêt
@@ -457,6 +461,12 @@ public class PretController {
             LocalDate dateRetourDate = LocalDate.parse(dateRetour);
             LocalTime heureActuelle = LocalTime.now();
             LocalDateTime dateRetourLdt = LocalDateTime.of(dateRetourDate, heureActuelle);
+            
+            // Vérifier que la date n'est pas un jour férié ou un dimanche
+            if (!pretValidationService.validateJourOuvre(dateRetourDate)) {
+                redirectAttributes.addFlashAttribute("error", pretValidationService.getValidationMessage());
+                return "redirect:/prets";
+            }
             
             // Récupérer le prêt
             Optional<Pret> pretOpt = pretService.getPretById(id);

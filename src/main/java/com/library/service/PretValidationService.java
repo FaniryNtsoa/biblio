@@ -3,6 +3,7 @@ package com.library.service;
 import com.library.model.Adherent;
 import com.library.model.Exemplaire;
 import com.library.model.TypePret;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -15,4 +16,8 @@ public interface PretValidationService {
     boolean validateNoPenalites(Adherent adherent);
     boolean validateNoPenalitesOnDate(Adherent adherent, LocalDateTime datePret);
     boolean validateNoPenalitesOnDate(Adherent adherent, LocalDate datePret);
+    
+    // Nouvelles méthodes pour valider les jours ouvrés
+    boolean validateJourOuvre(LocalDateTime date);
+    boolean validateJourOuvre(LocalDate date);
 }

@@ -30,6 +30,7 @@ import com.library.repository.TypePretRepository;
 import com.library.service.PretService;
 import com.library.service.ExemplaireAvailabilityService;
 import com.library.service.GestionAdherentService;
+import com.library.service.DateCalculationService;
 
 @Service
 public class PretServiceImpl implements PretService {
@@ -41,6 +42,7 @@ public class PretServiceImpl implements PretService {
     private final TypePretRepository typePretRepository;
     private final ExemplaireAvailabilityService exemplaireAvailabilityService;
     private final GestionAdherentService gestionAdherentService;
+    private final DateCalculationService dateCalculationService;
 
     @Autowired
     public PretServiceImpl(PretRepository pretRepository,
@@ -49,7 +51,8 @@ public class PretServiceImpl implements PretService {
                           PenaliteRepository penaliteRepository,
                           TypePretRepository typePretRepository,
                           ExemplaireAvailabilityService exemplaireAvailabilityService,
-                          GestionAdherentService gestionAdherentService) {
+                          GestionAdherentService gestionAdherentService,
+                          DateCalculationService dateCalculationService) {
         this.pretRepository = pretRepository;
         this.historiquePretRepository = historiquePretRepository;
         this.statusPretRepository = statusPretRepository;
@@ -57,6 +60,7 @@ public class PretServiceImpl implements PretService {
         this.typePretRepository = typePretRepository;
         this.exemplaireAvailabilityService = exemplaireAvailabilityService;
         this.gestionAdherentService = gestionAdherentService;
+        this.dateCalculationService = dateCalculationService;
     }
 
     @Override
@@ -262,9 +266,10 @@ public class PretServiceImpl implements PretService {
         pret.setTypePret(typePret);
         pret.setDatePret(reservation.getDateReservation());
         
-        // Calculer la date de retour prévue
+        // Calculer la date de retour prévue en tenant compte des jours non ouvrés
         int dureePret = gestionAdherentService.getDureePretForAdherent(reservation.getAdherent());
-        pret.setDateRetourPrevue(reservation.getDateReservation().plusDays(dureePret));
+        LocalDateTime dateRetourPrevue = dateCalculationService.addJoursOuvres(reservation.getDateReservation(), dureePret);
+        pret.setDateRetourPrevue(dateRetourPrevue);
         
         // Sauvegarder le prêt
         Pret savedPret = savePret(pret);

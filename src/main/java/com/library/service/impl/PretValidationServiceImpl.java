@@ -8,6 +8,7 @@ import com.library.repository.StatusPretRepository;
 import com.library.service.PretValidationService;
 import com.library.service.GestionAdherentService;
 import com.library.service.PenaliteService;
+import com.library.service.DateCalculationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class PretValidationServiceImpl implements PretValidationService {
     private final StatusPretRepository statusPretRepository;
     private final GestionAdherentService gestionAdherentService;
     private final PenaliteService penaliteService;
+    private final DateCalculationService dateCalculationService;
     
     private String validationMessage;
 
@@ -36,13 +38,15 @@ public class PretValidationServiceImpl implements PretValidationService {
                                    HistoriquePretRepository historiquePretRepository,
                                    StatusPretRepository statusPretRepository,
                                    GestionAdherentService gestionAdherentService,
-                                   PenaliteService penaliteService) {
+                                   PenaliteService penaliteService,
+                                   DateCalculationService dateCalculationService) {
         this.gestionAdherentRepository = gestionAdherentRepository;
         this.pretRepository = pretRepository;
         this.historiquePretRepository = historiquePretRepository;
         this.statusPretRepository = statusPretRepository;
         this.gestionAdherentService = gestionAdherentService;
         this.penaliteService = penaliteService;
+        this.dateCalculationService = dateCalculationService;
     }
 
     @Override
@@ -168,6 +172,22 @@ public class PretValidationServiceImpl implements PretValidationService {
     @Override
     public boolean validateNoPenalitesOnDate(Adherent adherent, LocalDate datePret) {
         return validateNoPenalitesOnDate(adherent, datePret.atStartOfDay());
+    }
+    
+    @Override
+    public boolean validateJourOuvre(LocalDateTime date) {
+        if (!dateCalculationService.isJourOuvre(date)) {
+            validationMessage = "La date sélectionnée (" + 
+                               date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                               ") est un jour férié ou un dimanche. Veuillez choisir un jour ouvré.";
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean validateJourOuvre(LocalDate date) {
+        return validateJourOuvre(date.atStartOfDay());
     }
 }
 

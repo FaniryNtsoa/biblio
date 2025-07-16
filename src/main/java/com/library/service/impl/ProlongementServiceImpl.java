@@ -11,6 +11,7 @@ import com.library.repository.StatusProlongementRepository;
 import com.library.service.ProlongementService;
 import com.library.service.GestionAdherentService;
 import com.library.service.PretService;
+import com.library.service.DateCalculationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class ProlongementServiceImpl implements ProlongementService {
     private final StatusProlongementRepository statusProlongementRepository;
     private final GestionAdherentService gestionAdherentService;
     private final PretService pretService;
+    private final DateCalculationService dateCalculationService;
 
     @Autowired
     public ProlongementServiceImpl(ProlongementRepository prolongementRepository,
@@ -38,13 +40,15 @@ public class ProlongementServiceImpl implements ProlongementService {
                                   PretRepository pretRepository,
                                   StatusProlongementRepository statusProlongementRepository,
                                   GestionAdherentService gestionAdherentService,
-                                  PretService pretService) {
+                                  PretService pretService,
+                                  DateCalculationService dateCalculationService) {
         this.prolongementRepository = prolongementRepository;
         this.historiqueProlongementRepository = historiqueProlongementRepository;
         this.pretRepository = pretRepository;
         this.statusProlongementRepository = statusProlongementRepository;
         this.gestionAdherentService = gestionAdherentService;
         this.pretService = pretService;
+        this.dateCalculationService = dateCalculationService;
     }
 
     @Override
@@ -152,9 +156,10 @@ public class ProlongementServiceImpl implements ProlongementService {
         }
         
         // Vérifier le quota de prolongements de l'adhérent
-        int prolongementsActifs = ((List<Prolongement>) prolongementRepository.findAll().stream()
+        int prolongementsActifs = prolongementRepository.findAll().stream()
                 .filter(p -> p.getPret().getAdherent().getId().equals(pret.getAdherent().getId()))
-                .filter(p -> getLatestStatusName(p).equals("ACCEPTEE")))
+                .filter(p -> getLatestStatusName(p).equals("ACCEPTEE"))
+                .collect(Collectors.toList())
                 .size();
         
         int maxProlongements = gestionAdherentService.getNombreProlongementMaxForAdherent(pret.getAdherent());
@@ -184,9 +189,13 @@ public class ProlongementServiceImpl implements ProlongementService {
         StatusProlongement statusAcceptee = getStatusByName("ACCEPTEE");
         updateStatusProlongement(prolongementId, statusAcceptee);
         
-        // Mettre à jour la date de retour prévue du prêt
+        // Mettre à jour la date de retour prévue du prêt en tenant compte des jours non ouvrés
         Pret pret = prolongement.getPret();
-        LocalDateTime nouvelleDate = pret.getDateRetourPrevue().plusDays(prolongement.getNbJour());
+        int dureeProlongement = prolongement.getNbJour();
+        
+        // Calculer la nouvelle date de retour en tenant compte des jours non ouvrés
+        LocalDateTime nouvelleDate = dateCalculationService.addJoursOuvres(pret.getDateRetourPrevue(), dureeProlongement);
+        
         pret.setDateRetourPrevue(nouvelleDate);
         pretRepository.save(pret);
         
