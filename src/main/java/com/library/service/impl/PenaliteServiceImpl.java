@@ -5,6 +5,7 @@ import com.library.model.Penalite;
 import com.library.model.Pret;
 import com.library.repository.PenaliteRepository;
 import com.library.repository.PretRepository;
+import com.library.service.GestionAdherentService;
 import com.library.service.PenaliteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,16 @@ public class PenaliteServiceImpl implements PenaliteService {
     private final PenaliteRepository penaliteRepository;
     private final PretRepository pretRepository;
 
+    // Modifier le constructeur pour injecter GestionAdherentService
+    private final GestionAdherentService gestionAdherentService;
+
     @Autowired
-    public PenaliteServiceImpl(PenaliteRepository penaliteRepository, PretRepository pretRepository) {
+    public PenaliteServiceImpl(PenaliteRepository penaliteRepository, 
+                              PretRepository pretRepository,
+                              GestionAdherentService gestionAdherentService) {
         this.penaliteRepository = penaliteRepository;
         this.pretRepository = pretRepository;
+        this.gestionAdherentService = gestionAdherentService;
     }
 
     @Override
@@ -105,7 +112,11 @@ public class PenaliteServiceImpl implements PenaliteService {
         penalite.setDescription(descriptionTronquee);
         
         penalite.setNbJoursRetard(joursRetard);
-        penalite.setDureeJours(joursRetard);
+        
+        // Utiliser le quota de pénalité au lieu des jours de retard pour calculer la durée
+        int quotaPenalite = gestionAdherentService.getQuotaPenaliteJoursForAdherent(pret.getAdherent());
+        penalite.setDureeJours(quotaPenalite);
+        
         penalite.setDateCreation(LocalDateTime.now());
         
         // Déterminer la date de début de pénalité
@@ -119,8 +130,8 @@ public class PenaliteServiceImpl implements PenaliteService {
         
         penalite.setDateDebutPenalite(dateDebut);
         
-        // Calculer la date de fin en ajoutant les jours de retard à la date de début
-        LocalDateTime dateFin = dateDebut.plusDays(joursRetard);
+        // Calculer la date de fin en ajoutant le quota de jours de pénalité à la date de début
+        LocalDateTime dateFin = dateDebut.plusDays(quotaPenalite);
         penalite.setDateFinPenalite(dateFin);
         penalite.setActive(true);
         

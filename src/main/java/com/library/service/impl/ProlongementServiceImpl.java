@@ -151,6 +151,17 @@ public class ProlongementServiceImpl implements ProlongementService {
             throw new RuntimeException("Ce prêt a déjà un prolongement actif ou accepté");
         }
         
+        // Vérifier le quota de prolongements de l'adhérent
+        int prolongementsActifs = ((List<Prolongement>) prolongementRepository.findAll().stream()
+                .filter(p -> p.getPret().getAdherent().getId().equals(pret.getAdherent().getId()))
+                .filter(p -> getLatestStatusName(p).equals("ACCEPTEE")))
+                .size();
+        
+        int maxProlongements = gestionAdherentService.getNombreProlongementMaxForAdherent(pret.getAdherent());
+        if (prolongementsActifs >= maxProlongements) {
+            throw new RuntimeException("Vous avez atteint votre quota de " + maxProlongements + " prolongements");
+        }
+        
         // Déterminer la durée du prolongement (même que la durée de prêt)
         int dureeProlongement = gestionAdherentService.getDureePretForAdherent(pret.getAdherent());
         

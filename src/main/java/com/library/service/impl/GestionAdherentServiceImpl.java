@@ -77,8 +77,62 @@ public class GestionAdherentServiceImpl implements GestionAdherentService {
     }
 
     @Override
+    public int getNombreReservationMaxForAdherent(Adherent adherent) {
+        Optional<GestionAdherent> gestion = findByTypeAdherent(adherent.getTypeAdherent());
+        if (gestion.isPresent()) {
+            System.out.println("Règle trouvée pour " + adherent.getTypeAdherent().getNom() +
+                    ": " + gestion.get().getNombreReservationMax() + " réservations max");
+            return gestion.get().getNombreReservationMax();
+        } else {
+            System.out.println("Aucune règle trouvée pour " + adherent.getTypeAdherent().getNom() +
+                    ", utilisation de la valeur par défaut: 3 réservations");
+            return 3; // Valeur par défaut
+        }
+    }
+
+    @Override
+    public int getNombreProlongementMaxForAdherent(Adherent adherent) {
+        Optional<GestionAdherent> gestion = findByTypeAdherent(adherent.getTypeAdherent());
+        if (gestion.isPresent()) {
+            System.out.println("Règle trouvée pour " + adherent.getTypeAdherent().getNom() +
+                    ": " + gestion.get().getNombreProlongementMax() + " prolongements max");
+            return gestion.get().getNombreProlongementMax();
+        } else {
+            System.out.println("Aucune règle trouvée pour " + adherent.getTypeAdherent().getNom() +
+                    ", utilisation de la valeur par défaut: 1 prolongement");
+            return 1; // Valeur par défaut
+        }
+    }
+
+    @Override
+    public int getQuotaPenaliteJoursForAdherent(Adherent adherent) {
+        Optional<GestionAdherent> gestion = findByTypeAdherent(adherent.getTypeAdherent());
+        if (gestion.isPresent()) {
+            System.out.println("Règle trouvée pour " + adherent.getTypeAdherent().getNom() +
+                    ": " + gestion.get().getQuotaPenaliteJours() + " jours de pénalité");
+            return gestion.get().getQuotaPenaliteJours();
+        } else {
+            System.out.println("Aucune règle trouvée pour " + adherent.getTypeAdherent().getNom() +
+                    ", utilisation de la valeur par défaut: 7 jours de pénalité");
+            return 7; // Valeur par défaut
+        }
+    }
+
+    @Override
     public boolean canAdherentBorrow(Adherent adherent, int currentPretCount) {
         int maxPrets = getNombrePretMaxForAdherent(adherent);
         return currentPretCount < maxPrets;
+    }
+
+    @Override
+    public boolean canAdherentReserve(Adherent adherent, int currentReservationCount) {
+        int maxReservations = getNombreReservationMaxForAdherent(adherent);
+        return currentReservationCount < maxReservations;
+    }
+
+    @Override
+    public boolean canAdherentProlonge(Adherent adherent, int currentProlongementCount) {
+        int maxProlongements = getNombreProlongementMaxForAdherent(adherent);
+        return currentProlongementCount < maxProlongements;
     }
 }

@@ -17,4 +17,11 @@ public interface GestionAdherentService {
     int getDureePretForAdherent(Adherent adherent);
     int getNombrePretMaxForAdherent(Adherent adherent);
     boolean canAdherentBorrow(Adherent adherent, int currentPretCount);
+    
+    // Nouvelles méthodes pour les quotas
+    int getNombreReservationMaxForAdherent(Adherent adherent);
+    int getNombreProlongementMaxForAdherent(Adherent adherent);
+    int getQuotaPenaliteJoursForAdherent(Adherent adherent);
+    boolean canAdherentReserve(Adherent adherent, int currentReservationCount);
+    boolean canAdherentProlonge(Adherent adherent, int currentProlongementCount);
 }

@@ -10,6 +10,7 @@ import com.library.repository.HistoriqueStatusReservationRepository;
 import com.library.repository.StatusReservationRepository;
 import com.library.service.ReservationService;
 import com.library.service.HistoriqueStatusReservationService;
+import com.library.service.GestionAdherentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,16 +29,19 @@ public class ReservationServiceImpl implements ReservationService {
     private final HistoriqueStatusReservationRepository historiqueStatusReservationRepository;
     private final StatusReservationRepository statusReservationRepository;
     private final HistoriqueStatusReservationService historiqueStatusReservationService;
+    private final GestionAdherentService gestionAdherentService;
 
     @Autowired
     public ReservationServiceImpl(ReservationRepository reservationRepository,
                                  HistoriqueStatusReservationRepository historiqueStatusReservationRepository,
                                  StatusReservationRepository statusReservationRepository,
-                                 HistoriqueStatusReservationService historiqueStatusReservationService) {
+                                 HistoriqueStatusReservationService historiqueStatusReservationService,
+                                 GestionAdherentService gestionAdherentService) {
         this.reservationRepository = reservationRepository;
         this.historiqueStatusReservationRepository = historiqueStatusReservationRepository;
         this.statusReservationRepository = statusReservationRepository;
         this.historiqueStatusReservationService = historiqueStatusReservationService;
+        this.gestionAdherentService = gestionAdherentService;
     }
 
     @Override
@@ -80,6 +84,17 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public Reservation createReservation(Adherent adherent, Livre livre, LocalDateTime dateReservation) {
+        // Vérifier si l'adhérent a atteint son quota de réservations
+        List<String> activeStatuses = List.of("EN_ATTENTE", "CONFIRMEE");
+        int reservationsActives = (int) findReservationsByAdherent(adherent).stream()
+                .filter(r -> activeStatuses.contains(getLatestStatusName(r)))
+                .count();
+        
+        int maxReservations = gestionAdherentService.getNombreReservationMaxForAdherent(adherent);
+        if (reservationsActives >= maxReservations) {
+            throw new RuntimeException("Vous avez atteint votre quota de " + maxReservations + " réservations");
+        }
+        
         // Créer la réservation
         Reservation reservation = new Reservation();
         reservation.setAdherent(adherent);
